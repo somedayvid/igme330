@@ -6,15 +6,65 @@
     <title>Document</title>
 </head>
 <style>
-</style>
-<script>
-    function init(){
-        function sayHello(){
-            
+    *{font-size: 1.5em;}
+
+    body{
+        background-color: red;
+    }
+    button{
+        font-size:14pt;
+        width:150px;
+        height:50px;
+    }
+
+    @media screen and (min-width:1024){
+        body{
+            background:red;
+            padding:100px;
         }
     }
+
+</style>
+<script>
+
+
+    function init(){
+        let button = document.querySelector("#helloButton");
+        console.log(button);
+        button.addEventListener('click', function(){
+                sayHello();
+            })
+    }
+
+    function sayHello(){
+        //3a - get name of person from the <input>
+        let firstname = document.querySelector("#input");
+        console.log(firstname);
+
+        if(firstname == ""){
+            firstname = "peter";
+        }
+
+        console.log(firstName);
+        //3b - get a reference to the #output <p>
+        let output = document.querySelector("#output");
+        console.log(output);
+        output.innerHTML = "Hello, " + firstname + " you are here";
+        //3c - update html of output
+        document.querySelector("p").style.backgroundColor = "yellow";
+        document.querySelector("p").style.color = "red";
+     }  
+
+
+
+     window.onload = init;
 </script>
 <body>
-    
+    <button id="helloButton">Say Hello</button>
+    <button>Say Goodbye</button>
+    <hr>
+    <input id="firstName">
+    <input id="lastname">
+    <p id="output">whattt</p>
 </body>
 </html>
