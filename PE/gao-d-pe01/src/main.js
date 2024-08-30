@@ -15,8 +15,9 @@
             }
 
             function init(){
-                const button = document.querySelector("#myButton");
-                button.addEventListener("click", generateBabble);
+                const generateButton = document.querySelector("#myButton");
+                generateButton.addEventListener("click", generateBabble);
+                generateBabble();
             }
 
             window.onload = init;
