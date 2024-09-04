@@ -15,9 +15,10 @@
         font-size:14pt;
         width:150px;
         height:50px;
+        font-family: "Comic Neue", cursive;
     }
 
-    @media screen and (min-width:1024){
+    @media only screen and (min-width:1024){
         body{
             background:red;
             padding:100px;
@@ -26,45 +27,47 @@
 
 </style>
 <script>
-
+    'use strict'
 
     function init(){
-        let button = document.querySelector("#helloButton");
-        console.log(button);
-        button.addEventListener('click', function(){
-                sayHello();
-            })
+        let greetButton = document.querySelector("#btn-greet");
+        greetButton.addEventListener('click', function(){
+            greet("Hello, ");
+        })
+        
+        let byeButton = document.querySelector("#btn-bye");
+        byeButton.onclick = () => {greet("Bye, ")};
+
+        byeButton.addEventListener('click', function(){
+            greet("Bye, ");
+        })
+
+        output.style.color = "red";
+        output.style.background = "yellow";
     }
 
-    function sayHello(){
-        //3a - get name of person from the <input>
-        let firstname = document.querySelector("#input");
-        console.log(firstname);
+    function greet(message){
+        let firstname = document.querySelector("#input-firstname").value.trim();
+        let lastname = document.querySelector("#input-lastname").value.trim();
+
+        let output = document.querySelector("#output");
 
         if(firstname == ""){
-            firstname = "peter";
+            firstname = "Peter";
         }
+        lastname = lastname || "Peter";
 
-        console.log(firstName);
-        //3b - get a reference to the #output <p>
-        let output = document.querySelector("#output");
-        console.log(output);
-        output.innerHTML = "Hello, " + firstname + " you are here";
-        //3c - update html of output
-        document.querySelector("p").style.backgroundColor = "yellow";
-        document.querySelector("p").style.color = "red";
-     }  
-
-
+        output.innerHTML = message + firstname + " " + lastname;
+    }
 
      window.onload = init;
 </script>
 <body>
-    <button id="helloButton">Say Hello</button>
-    <button>Say Goodbye</button>
+    <button id="btn-greet">Say Hello</button>
+    <button id="btn-bye">Say Goodbye</button>
     <hr>
-    <input id="firstName">
-    <input id="lastname">
+    <input id="input-firstname" placeholder="Type in your name">
+    <input id="input-lastname" placeholder="Type in your last name">
     <p id="output">whattt</p>
 </body>
 </html>
