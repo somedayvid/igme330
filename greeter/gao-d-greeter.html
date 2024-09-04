@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nerko+One&display=swap" rel="stylesheet">
+    <title>Greeter</title>
 </head>
 <style>
     *{font-size: 1.5em;}
@@ -15,7 +18,8 @@
         font-size:14pt;
         width:150px;
         height:50px;
-        font-family: "Comic Neue", cursive;
+        font-family: "Nerko One", cursive;
+
     }
 
     @media only screen and (min-width:1024){
@@ -39,7 +43,7 @@
         byeButton.onclick = () => {greet("Bye, ")};
 
         byeButton.addEventListener('click', function(){
-            greet("Bye, ");
+            greet("Goodbye, ");
         })
 
         output.style.color = "red";
@@ -55,9 +59,15 @@
         if(firstname == ""){
             firstname = "Peter";
         }
-        lastname = lastname || "Peter";
+        lastname = lastname || "Parker";
 
-        output.innerHTML = message + firstname + " " + lastname;
+        let text = message + firstname + " " + lastname;
+        let ckbShout = document.querySelector("#ckb-shout");
+        if(ckbShout.checked){
+            text = text.toUpperCase();
+        }
+        output.innerHTML = text;
+        
     }
 
      window.onload = init;
@@ -65,6 +75,7 @@
 <body>
     <button id="btn-greet">Say Hello</button>
     <button id="btn-bye">Say Goodbye</button>
+    <input type="checkbox" id="ckb-shout">Shoutify!
     <hr>
     <input id="input-firstname" placeholder="Type in your name">
     <input id="input-lastname" placeholder="Type in your last name">
