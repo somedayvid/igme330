@@ -1,23 +1,43 @@
-"use strict";
-            
-            const words1 = ["Acute", "Aft", "Anti-matter", "Bipolar", "Cargo", "Command", "Communication", "Computer", "Deuterium", "Dorsal", "Emergency", "Engineering", "Environmental", "Flight", "Fore", "Guidance", "Heat", "Impulse", "Increased", "Inertial", "Infinite", "Ionizing", "Isolinear", "Lateral", "Linear", "Matter", "Medical", "Navigational", "Optical", "Optimal", "Optional", "Personal", "Personnel", "Phased", "Reduced", "Science", "Ship's", "Shuttlecraft", "Structural", "Subspace", "Transporter", "Ventral"];
-            
-            const words2 = ["Propulsion", "Dissipation", "Sensor", "Improbability", "Buffer", "Graviton", "Replicator", "Matter", "Anti-matter", "Organic", "Power", "Silicon", "Holographic", "Transient", "Integrity", "Plasma", "Fusion", "Control", "Access", "Auto", "Destruct", "Isolinear", "Transwarp", "Energy", "Medical", "Environmental", "Coil", "Impulse", "Warp", "Phaser", "Operating", "Photon", "Deflector", "Integrity", "Control", "Bridge", "Dampening", "Display", "Beam", "Quantum", "Baseline", "Input"];
-            
-            const words3 = ["Chamber", "Interface", "Coil", "Polymer", "Biosphere", "Platform", "Thruster", "Deflector", "Replicator", "Tricorder", "Operation", "Array", "Matrix", "Grid", "Sensor", "Mode", "Panel", "Storage", "Conduit", "Pod", "Hatch", "Regulator", "Display", "Inverter", "Spectrum", "Generator", "Cloud", "Field", "Terminal", "Module", "Procedure", "System", "Diagnostic", "Device", "Beam", "Probe", "Bank", "Tie-In", "Facility", "Bay", "Indicator", "Cell"];
+import { getRand } from "./utils.js";
 
-            function getRand(wordsArray){
-                return wordsArray[Math.floor(Math.random() * wordsArray.length)];
-            }
+let words1 = [];
+let words2 = [];
+let words3 = [];
 
-            function generateBabble(){
-                document.querySelector("#output").innerHTML = getRand(words1) + " " + getRand(words2) + " " + getRand(words3);
-            }
+const generateBabble = (num) => {
+    let text = "";
+    for(let i = 0; i < num; i++){
+        text += `${getRand(words1)} ${getRand(words2)} ${getRand(words3)}<br>`;
+    }
+    document.querySelector("#output").innerHTML = text;
+}
 
-            function init(){
-                const generateButton = document.querySelector("#myButton");
-                generateButton.addEventListener("click", generateBabble);
-                generateBabble();
-            }
+const init = () => {
+    const oneBabbleBtn = document.querySelector("#btn-1-technobabble");
+    oneBabbleBtn.onclick = () => generateBabble(1);
+    const fiveBabbleBtn = document.querySelector("#btn-5-technobabble");
+    fiveBabbleBtn.onclick = () => generateBabble(5);
+    generateBabble(1);
+}
 
-            window.onload = init;
+const babbleLoaded = (e) => {
+    const json = JSON.parse(e.target.responseText);
+    words1 = json.words1;
+    words2 = json.words2;
+    words3 = json.words3;
+    init();
+}
+
+const loadBabble = () => {
+    const url = "data/babble-data.json";
+    const xhr = new XMLHttpRequest();
+
+    xhr.onload = (e) => {
+        babbleLoaded(e);
+    }
+
+    xhr.open("GET", url);
+    xhr.send();
+}
+
+window.onload = loadBabble;

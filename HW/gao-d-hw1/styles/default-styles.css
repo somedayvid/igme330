@@ -2,6 +2,10 @@ h1{
     font-family: "Nerko One", cursive;
 }
 
+#btn-5-technobabble{
+    display: none;
+}
+
 @media only screen and (min-width:320px){
     .container{
         display:flex;
@@ -35,7 +39,7 @@ h1{
         background-color: #23D160;
     }
 
-    #myButton{
+    button{
         width: 300px;
         height: 75pt;
         font-size: 1.5rem;
@@ -50,7 +54,7 @@ h1{
 @media only screen and (min-width:1024px){
     body{
         font-size:1rem;
-        text-align:left;
+        text-align:center;
     }
 
     h1{
@@ -63,7 +67,7 @@ h1{
     }
 
     #output{
-        text-align: left;
+        text-align: center;
     }
 }
 
@@ -82,11 +86,15 @@ h1{
         margin: 2rem;
     }
 
-    p{
+    div{
         color: black;
     }
 
     #output{
         text-align: center;
+    }
+
+    #btn-5-technobabble{
+        display:inline-block;
     }
 }
