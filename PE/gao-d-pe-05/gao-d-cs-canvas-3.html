@@ -13,7 +13,69 @@
 		// See what 'use strict' does here:
 		// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode
 		"use strict";
+
+        let ctx;
 		
+        // handy helper functions!
+        function getRandomColor(){
+            function getByte(){
+                return 55 + Math.round(Math.random() * 200);
+            }
+            return "rgba(" + getByte() + "," + getByte() + "," + getByte() + ",.8)";
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        function update(){
+            requestAnimationFrame(update);
+            drawHorizontalRandomLines(ctx);
+            drawVerticalRandomLines(ctx);
+        }
+        function drawRandomRect(ctx){
+            ctx.fillStyle = getRandomColor();
+            ctx.strokeStyle = getRandomColor();
+            ctx.lineWidth = getRandomInt(2,12);
+            ctx.beginPath();
+            ctx.rect(getRandomInt(0,640),getRandomInt(0,480),getRandomInt(10,90),getRandomInt(10,90));
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function drawRandomCircle(ctx){
+            ctx.fillStyle = getRandomColor();
+            ctx.strokeStyle = getRandomColor();
+            ctx.beginPath();
+            ctx.arc(getRandomInt(0,640),getRandomInt(0,480),getRandomInt(10,100),0,Math.PI * 2, false);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function drawHorizontalRandomLines(ctx){
+            ctx.strokeStyle = getRandomColor();
+            ctx.lineWidth = getRandomInt(1,15);
+            ctx.beginPath();
+            const y = getRandomInt(0,480);
+            ctx.moveTo(0, y);
+            ctx.lineTo(640, y);
+            ctx.closePath();
+            ctx.stroke();
+        }
+        
+        function drawVerticalRandomLines(ctx){
+            ctx.strokeStyle = getRandomColor();
+            ctx.lineWidth = getRandomInt(1,15);
+            ctx.beginPath();
+            const x = getRandomInt(0,640);
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, 480);
+            ctx.closePath();
+            ctx.stroke();
+        }
+
 		// #1 call the `init` function after the pages loads
 		window.onload = init;
 	
@@ -25,7 +87,7 @@
 			let canvas = document.querySelector("canvas");
 			
 			// B - the `ctx` variable points at a "2D drawing context"
-			let ctx = canvas.getContext("2d");
+			ctx = canvas.getContext("2d");
 			
 			// C - all fill operations are now in red
 			ctx.fillStyle = "red";
@@ -37,18 +99,6 @@
 			ctx.lineWidth = 10;
 			ctx.strokeRect(120,120,400,300);
 	
-			// ctx.fillStyle = "lightblue";
-			// ctx.fillRect(200,40,80,200);
-			// ctx.strokeStyle = "purple";
-			// ctx.lineWidth = 15;
-			// ctx.strokeRect(200,40,80,200);
-
-			// ctx.fillStyle = "rgb(255, 165, 0)";
-			// ctx.fillRect(100,400,500,40);
-			// ctx.strokeStyle = "#29F1B0";
-			// ctx.lineWidth = 5;
-			// ctx.strokeRect(100,400,500,40);
-
             ctx.fillStyle = 'yellow';
             ctx.strokeStyle = "magenta";
             ctx.lineWidth = 10;
@@ -111,6 +161,8 @@
             ctx.lineTo(625,400);
             ctx.closePath();
             ctx.stroke();
+
+            update();
 		}
 	</script>
 </head>
