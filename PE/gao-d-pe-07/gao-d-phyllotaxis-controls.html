@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>Sine Start</title>
+	<style>
+        canvas{ border: 1px solid black; }
+    </style>
+	<script>
+	"use strict";
+
+	const canvasWidth = 400, canvasHeight = 300;
+	let ctx;
+    let n = 0;
+    const c = 4;
+    let divergence = 137.5;
+    let fps = 60;
+    const spiralCircleRadius = 2;
+
+	function init(){
+		ctx = canvas.getContext("2d");
+		canvas.width = canvasWidth;
+		canvas.height = canvasHeight;
+		ctx.fillRect(0,0,canvasWidth,canvasHeight);
+
+        const ctrlDivergence = document.querySelector("#input-divergence");
+
+        ctrlDivergence.value = ctrlDivergence.defaultValue;
+
+        ctrlDivergence.onchange = () => {
+            divergence = ctrlDivergence.value;
+            document.querySelector("#p-output-divergence").innerHTML = `Current Divergence: ${ctrlDivergence.value}`;
+        }
+
+        document.querySelector("#btn-restart").onclick = () => {
+            ctx.clearRect(0,0, 640,480);
+            ctx.fillStyle = "black";
+            ctx.fillRect(0,0,canvasWidth,canvasWidth);
+            n = 0;
+            ctrlDivergence.value = ctrlDivergence.defaultValue;
+            document.querySelector("#p-output-divergence").innerHTML = `Current Divergence: ${ctrlDivergence.value}`;
+            divergence = ctrlDivergence.value;
+        };
+
+
+
+        canvas.onclick = canvasClicked;
+
+        loop();
+	}
+
+    function loop(){
+        setTimeout(loop,1000/fps);
+
+        let a = n * dtr(divergence);
+        let r = c * Math.sqrt(n);
+
+        let x = r * Math.cos(a) + canvasWidth/2;
+        let y = r * Math.sin(a) + canvasHeight/2;
+
+        let aDegrees = (n * divergence) % 361;
+        let color = `hsl(${aDegrees},100%,50%)`;
+        drawCircle(ctx,x,y,spiralCircleRadius,color);
+        n++;
+    }
+
+	// helpers
+	function dtr(degrees){
+		return degrees * (Math.PI/180);
+	}
+
+	function drawCircle(ctx,x,y,radius,color){
+		ctx.save();
+		ctx.fillStyle = color;
+		ctx.beginPath();
+		ctx.arc(x,y,radius,0,Math.PI * 2);
+		ctx.closePath();
+		ctx.fill();
+		ctx.restore();
+	}
+
+    const canvasClicked = e =>{
+        let rect = e.target.getBoundingClientRect();
+        let mouseX = e.clientX - rect.x;
+        let mouseY = e.clientY - rect.y;
+
+        const circleSize = 10;
+
+        let petalColor = getRandomColor();
+
+        drawArc(ctx,mouseX + 10,mouseY, circleSize, petalColor, 1, petalColor);
+        drawArc(ctx,mouseX - 10,mouseY, circleSize, petalColor, 1, petalColor);
+        drawArc(ctx,mouseX,mouseY + 10, circleSize, petalColor, 1, petalColor);
+        drawArc(ctx,mouseX,mouseY - 10, circleSize, petalColor, 1, petalColor);
+
+        drawArc(ctx,mouseX,mouseY, circleSize, "yellow", 1, "yellow");
+    }
+
+    const drawArc = (ctx, x, y, radius, fillStyle="black", lineWidth=0, strokeStyle="black",startAngle = 0, endAngle = Math.PI*2) =>{
+        ctx.save();
+        ctx.fillStyle = fillStyle;
+        ctx.beginPath();
+        ctx.arc(x,y, radius, startAngle,endAngle,false);
+        ctx.fill();
+        if(lineWidth > 0){
+            ctx.lineWidth = lineWidth;
+            ctx.strokeStyle = strokeStyle;
+        }
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+    }
+
+    const getRandomColor = () =>{ const getByte = () => 55 + Math.round(Math.random() * 200);
+        return `rgba(${getByte()}, ${getByte()}, ${getByte()}, .8)`;
+    }
+
+    const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min; 
+
+
+    window.onload = init;
+	</script>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+    <div id="controls">
+        <label for="input-divergence">Divergence(0-360):</label>
+        <input type="range" id="input-divergence" name="vol" step="0.5" min="0.0" max="360.0" value="137.5">
+        <div id="p-output-divergence">Current Divergence: 137.5</div>
+        <button id="btn-restart">Restart</button>
+    </div>
+
+    <div id="about-the-app">
+        <ul>
+            <li>The range slider allows the user to adjust the divergence angle anywhere from 0 to 360 degrees</li>
+            <li>The restart button just clears the rect, resets n back to 0 and then fills the screen with black again. 
+                Also rests the divergence slider back to the default of 137.5
+            </li>
+            <li>The user is able to click on the canvas screen in order to place a flower of a random color on the canvas</li>
+            <li>Color of dot changes based on angle it is spawned at</li>
+        </ul>
+    </div>
+</body>
+</html>
