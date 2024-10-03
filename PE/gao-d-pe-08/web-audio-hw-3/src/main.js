@@ -15,12 +15,14 @@ const drawParams = {
   showGradient : true,
   showBars : true,
   showCircles : true,
-  showNoise : true
+  showNoise : false,
+  showInvert : false,
+  showEmboss : false
 };
 
 // 1 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
-	sound1  :  "../media/New Adventure Theme.mp3"
+	sound1  :  "media/New Adventure Theme.mp3"
 });
 
 function init(){
@@ -93,10 +95,16 @@ function setupUI(canvasElement){
   const gradiantCheckBox = document.querySelector("#gradientCB");
   const barsCheckBox = document.querySelector("#barsCB");
   const circlesCheckBox = document.querySelector("#circlesCB");
+  const noiseCheckBox = document.querySelector("#noiseCB");
+  const invertCheckBox = document.querySelector("#invertCB");
+  const embossCheckBox = document.querySelector("#embossCB");
 
-  gradiantCheckBox.checked = true;
-  barsCheckBox.checked = true;
-  circlesCheckBox.checked = true;
+  gradiantCheckBox.checked = drawParams.showGradient;
+  barsCheckBox.checked = drawParams.showBars;
+  circlesCheckBox.checked = drawParams.showCircles;
+  noiseCheckBox.checked = drawParams.showNoise;
+  invertCheckBox.checked = drawParams.showInvert;
+  embossCheckBox.checked = drawParams.showEmboss;
 
   gradiantCheckBox.onchange = () =>{
     drawParams.showGradient = gradiantCheckBox.checked;
@@ -106,6 +114,15 @@ function setupUI(canvasElement){
   }
   circlesCheckBox.onchange = () =>{
     drawParams.showCircles = circlesCheckBox.checked;
+  }
+  noiseCheckBox.onchange = () =>{
+    drawParams.showNoise = noiseCheckBox.checked;
+  }
+  invertCheckBox.onchange = () =>{
+    drawParams.showInvert = invertCheckBox.checked;
+  }
+  embossCheckBox.onchange = () =>{
+    drawParams.showEmboss = embossCheckBox.checked;
   }
 } // end setupUI
 export {init};
