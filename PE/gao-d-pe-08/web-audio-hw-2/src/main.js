@@ -90,9 +90,9 @@ function setupUI(canvasElement){
     }
   };
 
-  const gradiantCheckBox = document.querySelector("#gradientCB");
-  const barsCheckBox = document.querySelector("#barsCB");
-  const circlesCheckBox = document.querySelector("#circlesCB");
+  const gradiantCheckBox = document.querySelector("#gradient-CB");
+  const barsCheckBox = document.querySelector("#bars-CB");
+  const circlesCheckBox = document.querySelector("#circles-CB");
 
   gradiantCheckBox.checked = true;
   barsCheckBox.checked = true;

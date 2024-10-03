@@ -92,12 +92,12 @@ function setupUI(canvasElement){
     }
   };
 
-  const gradiantCheckBox = document.querySelector("#gradientCB");
-  const barsCheckBox = document.querySelector("#barsCB");
-  const circlesCheckBox = document.querySelector("#circlesCB");
-  const noiseCheckBox = document.querySelector("#noiseCB");
-  const invertCheckBox = document.querySelector("#invertCB");
-  const embossCheckBox = document.querySelector("#embossCB");
+  const gradiantCheckBox = document.querySelector("#gradient-CB");
+  const barsCheckBox = document.querySelector("#bars-CB");
+  const circlesCheckBox = document.querySelector("#circles-CB");
+  const noiseCheckBox = document.querySelector("#noise-CB");
+  const invertCheckBox = document.querySelector("#invert-CB");
+  const embossCheckBox = document.querySelector("#emboss-CB");
 
   gradiantCheckBox.checked = drawParams.showGradient;
   barsCheckBox.checked = drawParams.showBars;
