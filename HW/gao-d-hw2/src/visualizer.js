@@ -1,161 +1,281 @@
 import * as utils from './utils.js';
 import {dataType} from './main.js';
+import {paused} from './main.js';
+import { isKeysPressed } from './main.js';
 
-let ctx,canvasWidth,canvasHeight,gradient,analyserNode,audioData;
-const BAR_WIDTH = 30;
-const MAX_BAR_HEIGHT = 100;
-const PADDING = 4;
-let MIDDLE_Y;
+let ctx,canvasWidth,canvasHeight,gradient, drumData,bassData,guitarData,vocalData;
 
-const setupCanvas = (canvasElement,analyserNodeRef) =>{
+let drumData2, bassData2, guitarData2, vocalData2;
+
+let nodeRefList = [];
+let pastNodeRefList = [];
+
+let audioData = [];
+let pastAudioData = [];
+
+let circlesList = [];
+
+let drumCanSpawn = true;
+let vocalCanSpawn = true;
+let bassCanSpawn = true;
+let guitarCanSpawn = true;
+
+let timeBetweenNotes = 225;
+
+const setupCanvas = (canvasElement,audioList, pastAudioList) =>{
 	// create drawing context
 	ctx = canvasElement.getContext("2d");
+	canvasElement.width = window.innerWidth;
+	canvasElement.height = window.innerHeight + 10;
 	canvasWidth = canvasElement.width;
 	canvasHeight = canvasElement.height;
-    MIDDLE_Y = ctx.canvas.height/2;
 	// create a gradient that runs top to bottom
-	gradient = utils.getLinearGradient(ctx,0,0,0,canvasHeight,[{percent:0,color:"#61ff69"},{percent:.5,color:"#ff6961"},{percent:1,color:"#6961ff"}]);
+	//gradient = utils.getLinearGradient(ctx,0,0,0,canvasHeight,[{percent:0,color:"#61ff69"},{percent:.5,color:"#ff6961"},{percent:1,color:"#6961ff"}]);
 	// keep a reference to the analyser node
-	analyserNode = analyserNodeRef;
+
+	for(let nodeIndex in audioList){
+		nodeRefList[nodeIndex] = audioList[nodeIndex].audioAnalyser;
+	}
+	for(let nodeIndex in pastAudioList){
+		pastNodeRefList[nodeIndex] = pastAudioList[nodeIndex].audioAnalyser;
+	}
+
 	// this is the array where the analyser data will be stored
-	audioData = new Uint8Array(analyserNode.fftSize/2);
+	drumData = new Uint8Array(nodeRefList[0].fftSize/2);
+	vocalData = new Uint8Array(nodeRefList[1].fftSize/2);
+	bassData = new Uint8Array(nodeRefList[2].fftSize/2);
+    guitarData = new Uint8Array(nodeRefList[3].fftSize/2);
+
+	drumData2 = new Uint8Array(pastNodeRefList[0].fftSize/2);
+	vocalData2 = new Uint8Array(pastNodeRefList[1].fftSize/2);
+	bassData2 = new Uint8Array(pastNodeRefList[2].fftSize/2);
+    guitarData2 = new Uint8Array(pastNodeRefList[3].fftSize/2);
+
+
+	audioData[0] = drumData;
+	audioData[1] = vocalData;
+	audioData[2] = bassData;
+	audioData[3] = guitarData;
+
+	pastAudioData[0] = drumData2;
+	pastAudioData[1] = vocalData;
+	pastAudioData[2] = bassData;
+	pastAudioData[3] = guitarData;
 }
 
 const draw = (params={}) =>{
-//   // 1 - populate the audioData array with the frequency data from the analyserNode
-// 	// notice these arrays are passed "by reference" 
-//     if(dataType == "frequency"){
-// 	    analyserNode.getByteFrequencyData(audioData);
-//     }
-//     else if(dataType == "waveform"){
-// 	    analyserNode.getByteTimeDomainData(audioData); // waveform data
-//     }
-// 	// OR
+	ctx.save();
+	ctx.fillStyle = "red";
+	ctx.rect(canvasWidth/3, 0, canvasWidth/3, canvasHeight);
+	ctx.fill();
+	ctx.restore();
+
+  // 1 - populate the audioData array with the frequency data from the analyserNode
+	// notice these arrays are passed "by reference" 
+    if(dataType == "frequency"){
+		nodeRefList[0].getByteFrequencyData(drumData);
+		nodeRefList[1].getByteFrequencyData(vocalData);
+		nodeRefList[2].getByteFrequencyData(bassData);
+		nodeRefList[3].getByteFrequencyData(guitarData);
+
+		pastNodeRefList[0].getByteFrequencyData(drumData2);
+		pastNodeRefList[1].getByteFrequencyData(vocalData2);
+		pastNodeRefList[2].getByteFrequencyData(bassData2);
+		pastNodeRefList[3].getByteFrequencyData(guitarData2);
+    }
+    else if(dataType == "waveform"){
+		nodeRefList[0].getByteTimeDomainData(drumData);
+		nodeRefList[1].getByteTimeDomainData(vocalData);
+		nodeRefList[2].getByteTimeDomainData(bassData);
+		nodeRefList[3].getByteTimeDomainData(guitarData);
+
+		pastNodeRefList[0].getByteTimeDomainData(drumData2);
+		pastNodeRefList[1].getByteTimeDomainData(vocalData2);
+		pastNodeRefList[2].getByteTimeDomainData(bassData2);
+		pastNodeRefList[3].getByteTimeDomainData(guitarData2);
+    }
 	
-// 	// // 2 - draw background
-// 	ctx.save();
-//     ctx.fillStyle =  "white";
-//     ctx.globalAlpha = .1;
-//     ctx.fillRect(0,0,canvasWidth,canvasHeight);
-//     ctx.restore();
+	// 2 - draw background
+	ctx.save();
+	ctx.globalAlpha = 1;
+    ctx.fillStyle =  "black";
+    ctx.globalAlpha = .1;
+    ctx.fillRect(0,0,canvasWidth,canvasHeight);
+    ctx.restore();
 		
-// 	// // 3 - draw gradient
-// 	// if(params.showGradient){
-//     //     ctx.save();
-//     //     ctx.fillStyle = gradient;
-//     //     ctx.globalAlpha = .8;
-//     //     ctx.fillRect(0,0,canvasWidth,canvasHeight);
-//     //     ctx.restore();
-//     // }
-// 	// 4 - draw bars
-// 	if(params.showBars){
-//         let barSpacing = 4;
-//         let margin = 5;
-//         let screenWidthForBars = canvasWidth - (audioData.length * barSpacing) - margin * 2;
-//         let barWidth = screenWidthForBars / audioData.length;
-//         let barHeight = 200;
-//         let topSpacing = 100;
+	// 3 - draw gradient
+	// if(params.showGradient){
+    //     ctx.save();
+    //     ctx.fillStyle = gradient;
+    //     ctx.globalAlpha = .8;
+    //     ctx.fillRect(0,0,canvasWidth,canvasHeight);
+    //     ctx.restore();
+    // }
+	// // 5 - draw circles
+	if(params.showCircles){
+		let maxRadius = canvasHeight/5;
 
-//         ctx.save();
-//         ctx.fillStyle = 'rgba(255,255,255,0.50)';
-//         ctx.strokeStyle = 'rgba(0,0,0,0.50)';
-//         //loop through the data and draw!
-//         for(let i = 0; i <audioData.length; i++){
-//             ctx.fillRect(margin + i * (barWidth + barSpacing),topSpacing + 256-audioData[i],barWidth,barHeight);
-//             ctx.strokeRect(margin + i * (barWidth + barSpacing),topSpacing + 256-audioData[i],barWidth,barHeight);
-//         }
-//         ctx.restore();
-//     }
-// 	// // 5 - draw circles
-// 	if(params.showCircles){
-//         let maxRadius = canvasHeight/4;
-//         ctx.save();
-//         ctx.globalAlpha = 0.5;
-//         for(let i = 0; i < audioData.length; i++){
-//             // red-ish circles
-//             let percent = audioData[i] / 255;
+		//draws the audio beat representation 
+		for(let i = 0; i < pastAudioData.length; i++){
+			for(let j = 0; j < pastAudioData[i].length; j++){
+				let percent = pastAudioData[i][j] / 255;
+				
+				let circleRadius = percent * maxRadius;
+				ctx.save();
+				ctx.beginPath();
+				ctx.fillStyle = utils.makeColor(i * 80, i * 80,i * 80,.34-percent/3.0);
+				if(i > 1){
+					ctx.arc(250 + (i % 2) * 1000, 600,circleRadius, 0, 2 * Math.PI, false);
+				}
+				else{
+					ctx.arc(250 + (i % 2) * 1000, 300,circleRadius, 0, 2 * Math.PI, false);
+				}
+				ctx.fill();
+				ctx.closePath();
+				ctx.restore();
+			}
+		}
 
-//             let circleRadius = percent * maxRadius;
-//             ctx.beginPath();
-//             ctx.fillStyle = utils.makeColor(255,111,111,.34-percent/3.0);
-//             ctx.arc(canvasWidth/2,canvasHeight/2,circleRadius, 0, 2 * Math.PI, false);
-//             ctx.fill();
-//             ctx.closePath();
+		//draws the notes that move
+		for(let i = 0; i < audioData.length; i++){
+			let percentList = [];
+			for(let j = 0; j < audioData[i].length; j++){
+				let percent = audioData[i][j] / 255;
+				percentList.push(percent);
+			}
+			let x = 0;
+			for(let index in percentList){
+				x += percentList[index];
+			}
+			x/=percentList.length;
+			switch(i){
+				case 0:
+					if(drumCanSpawn){
+						if(x > .3){
+							pushNewCircle(i);
+						}
+						drumCanSpawn = false;
+						setTimeout(function(){ drumCanSpawn = true}, timeBetweenNotes);
+					}
+					break;
+				case 1:
+					if(vocalCanSpawn){
+						if(x > .2){
+							pushNewCircle(i);
+						}
+						vocalCanSpawn = false;
+						setTimeout(function(){ vocalCanSpawn = true}, timeBetweenNotes);
+					}
+					break;
+				case 2:
+					if(bassCanSpawn){
+						if(x < .3 && x > .05){
+							pushNewCircle(i);
+						}
+						bassCanSpawn = false;
+						setTimeout(function(){ bassCanSpawn = true}, timeBetweenNotes);
+					}
+					break;
+				case 3:
+					if(guitarCanSpawn){
+						if(x > .15){
+							pushNewCircle(i);
+						}
+						guitarCanSpawn = false;
+						setTimeout(function(){ guitarCanSpawn = true}, timeBetweenNotes);
+					}
+					break;
+			}
+		}
+    }
 
-//     //         //blue-ish circles, bigger, more transparent
-//     //         ctx.beginPath();
-//     //         ctx.fillStyle = utils.makeColor(0,0,255,.10 - percent/10.0);
-//     //         ctx.arc(canvasWidth/2, canvasHeight/2, circleRadius * 1.5, 0, 2 * Math.PI, false);
-//     //         ctx.fill();
-//     //         ctx.closePath();
-            
-//     //         //yellowish circles, smaller
-//     //         ctx.save();
-//     //         ctx.beginPath();
-//     //         ctx.fillStyle = utils.makeColor(200,200,0,.5 - percent/5.0);
-//     //         ctx.arc(canvasWidth/2, canvasHeight/2, circleRadius * .5, 0, 2 * Math.PI, false);
-//     //         ctx.fill();
-//     //         ctx.closePath();
-//     //         ctx.restore();
-//         }
-//         ctx.restore();
-//     }
+	for(let index in circlesList){
+		circlesList[index].update();
+		if (circlesList[index].x + circlesList[index].radius < 0) {
+			circlesList.splice(index, 1);
+		  }
+	}
 
-//     // // 6 - bitmap manipulation
-// 	// // TODO: right now. we are looping though every pixel of the canvas (320,000 of them!), 
-// 	// // regardless of whether or not we are applying a pixel effect
-// 	// // At some point, refactor this code so that we are looping though the image data only if
-// 	// // it is necessary
+	ctx.save();
+	ctx.beginPath();
+	ctx.moveTo(canvasWidth/3,700);
+	ctx.lineTo(canvasWidth/3 + canvasWidth/3,700);
+	ctx.strokeStyle = "yellow";
+	ctx.lineWidth = 15;
+	ctx.stroke();
+	ctx.restore();
 
-// 	// // A) grab all of the pixels on the canvas and put them in the `data` array
-// 	// // `imageData.data` is a `Uint8ClampedArray()` typed array that has 1.28 million elements!
-// 	// // the variable `data` below is a reference to that array 
-//     // let imageData = ctx.getImageData(0,0,canvasWidth, canvasHeight);
-//     // let data = imageData.data;
-//     // let length = data.length;
-//     // let width = imageData.width; 
-//     // // B) Iterate through each pixel, stepping 4 elements at a time (which is the RGBA for 1 pixel)
-//     // for(let i = 0; i < length; i += 4){
-//     //     // C) randomly change every 20th pixel to red
-//     //     if(params.showNoise && Math.random() < .05){
-//     //         // data[i] is the red channel
-//     //         // data[i+1] is the green channel
-//     //         // data[i+2] is the blue channel
-//     //         // data[i+3] is the alpha channel
-//     //         data[i] = data[i+1] = data[i+2] = 255;// zero out the red and green and blue channels
-//     //         // data[i] = 255; make the red channel 100% red
-//     //     } // end if
+	circlePress();
 
-//     //     if(params.showInvert){
-//     //         let red = data[i], green = data[i + 1], blue = data[i + 2];
-//     //         data[i] = 255 - red;
-//     //         data[i + 1] = 255 - green;
-//     //         data[i + 2] = 255 - blue;
-//     //         //data[i + 3] is the alpha, but we're leaving that alone
-//     //     }
-//     // } // end for
-//     // if(params.showEmboss){
-//     //     for(let i = 0; i < length; i++){
-//     //         if(i % 4 == 3) continue; // skip alpha channel
-//     //         data[i] = 127 + 2*data[i] - data[i+4] - data[i + width*4];
-//     //     }
-//     // }
-//     //     // D) copy image data back to canvas
-//     // ctx.putImageData(imageData,0,0);
+}
 
-//     // ctx.fillStyle = "rgba(0,0,0,.1)";
-//     // ctx.fillRect(0,0,ctx.canvas.width,ctx.canvas.height);
-//     // ctx.fillStyle = "red";
-//     // ctx.save();
-//     // ctx.translate(canvasWidth/2, MIDDLE_Y);
-//     // for(let b of audioData){
-//     //     let percent = b /255;
-//     //     ctx.translate(BAR_WIDTH, 0);
-//     //     ctx.rotate(-Math.PI * 2/32);
-//     //     ctx.fillRect(0,0,BAR_WIDTH,MAX_BAR_HEIGHT * percent);
-//     // }
-//     // ctx.restore();
+function Circle(x, y, radius, speed) {
+	this.x = x;
+	this.y = y;
+	this.radius = radius;
+	this.speed = speed;
+	
+	this.draw = function() {
+	  ctx.beginPath();
+	  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+	  ctx.fillStyle = 'blue';
+	  ctx.fill();
+	  ctx.closePath();
+	};
+  
+	this.update = function() {
+		if(!paused){
+			this.y += this.speed;
+		}
+		this.draw();
+	};
+}
 
+const pushNewCircle = (i) =>{
+	circlesList.push(new Circle(canvasWidth/3 + 100 + 100 * i , -50, 50, 15));
+}
+
+const circlePress = () =>{
+	if(isKeysPressed.s){
+		ctx.save();
+		ctx.beginPath();
+		ctx.moveTo(canvasWidth/3 + 50,700);
+		ctx.lineTo(canvasWidth/3 + 150,700);
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = 15;
+		ctx.stroke();
+		ctx.restore();
+	}
+	if(isKeysPressed.d){
+		ctx.save();
+		ctx.beginPath();
+		ctx.moveTo(canvasWidth/3 + 150,700);
+		ctx.lineTo(canvasWidth/3 + 250,700);
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = 15;
+		ctx.stroke();
+		ctx.restore();
+	}
+	if(isKeysPressed.j){
+		ctx.save();
+		ctx.beginPath();
+		ctx.moveTo(canvasWidth/3 + 250,700);
+		ctx.lineTo(canvasWidth/3 + 350,700);
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = 15;
+		ctx.stroke();
+		ctx.restore();
+	}
+	if(isKeysPressed.k){
+		ctx.save();
+		ctx.beginPath();
+		ctx.moveTo(canvasWidth/3 + 350,700);
+		ctx.lineTo(canvasWidth/3 + 450,700);
+		ctx.strokeStyle = "red";
+		ctx.lineWidth = 15;
+		ctx.stroke();
+		ctx.restore();
+	}
 }
 
 export {setupCanvas,draw};

@@ -1,18 +1,31 @@
+*{
+  overflow: hidden;
+}
+
 body {
     background: #eeeeee;
     font-family: tahoma, verdana, sans serif;
   }
+
   
   canvas {
-    margin-left: 1rem;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+    /* margin-left: 1rem;
+    margin-bottom: 1rem; */
+    margin-top: -8px;
     box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
     background: #fafafa;
+    position: absolute;
+    top:0;
+    left:0;
   }
   
   #controls{
     margin-left: 1rem;
+    grid-area: controls;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 120px;
   }
   
   #volumeLabel{
