@@ -1,11 +1,37 @@
 import * as utils from './utils.js';
 import * as audio from './audio.js';
 import * as canvas from './visualizer.js'
+import * as game from './gameManager.js'
 
 export let dataType;
 export let paused = false;
 
-let isKeysPressed = {};
+let isKeysPressed = {
+  s: {
+    justPressed: false,
+    pressed: false,
+    released: true,
+    number: 0
+  },
+  d: {
+    justPressed: false,
+    pressed: false,
+    released: true,
+    number: 1
+  },
+  j: {
+    justPressed: false,
+    pressed: false,
+    released: true,
+    number: 2
+  },
+  k: {
+    justPressed: false,
+    pressed: false,
+    released: true,
+    number: 3
+  }
+};
 
 const drawParams = {
   showGradient : true,
@@ -147,11 +173,26 @@ const setupUI = canvasElement =>{
   }
 
   document.addEventListener('keydown', function(e){
-    isKeysPressed[e.key] = true;
+    if(e.key == 's' || e.key == 'd' || e.key == 'j' || e.key == 'k')
+    {
+      isKeysPressed[e.key].pressed = true;
+      if(isKeysPressed[e.key].released){
+        isKeysPressed[e.key].justPressed = true;
+        isKeysPressed[e.key].released = false;
+      }
+      else{
+        setTimeout(() => {
+          isKeysPressed[e.key].justPressed = false;
+        }, 100);
+      }
+    }
   })
 
   document.addEventListener('keyup', function(e){
-    isKeysPressed[e.key] = false;
+    if(e.key == 's' || e.key == 'd' || e.key == 'j' || e.key == 'k'){
+      isKeysPressed[e.key].pressed = false;
+      isKeysPressed[e.key].released = true;
+    } 
   })
 
 } // end setupUI
@@ -167,9 +208,11 @@ const audioChange = x =>{
 }
 
 const loop = () =>{
-  //if(dataType == "frequency"){
+  if(dataType == "frequency"){
       setTimeout(loop, 1000/60);
-  //}
+  }
+
+  game.update();
+  
   canvas.draw(drawParams);
 }
-

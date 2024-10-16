@@ -2,6 +2,7 @@ import * as utils from './utils.js';
 import {dataType} from './main.js';
 import {paused} from './main.js';
 import { isKeysPressed } from './main.js';
+import * as game from './gameManager.js';
 
 let ctx,canvasWidth,canvasHeight,gradient, drumData,bassData,guitarData,vocalData;
 
@@ -15,10 +16,34 @@ let pastAudioData = [];
 
 let circlesList = [];
 
-let drumCanSpawn = true;
-let vocalCanSpawn = true;
-let bassCanSpawn = true;
-let guitarCanSpawn = true;
+//let allCanSpawn = true;
+
+let notesManager = {
+	drums:{
+		canSpawn : true,
+		upperLim : 100000,
+		lowerLim : .15,
+		number : 0
+	},
+	vocals:{
+		canSpawn : true,
+		upperLim : 100000,
+		lowerLim : .2,
+		number : 1
+	},
+	bass:{
+		canSpwan : true,
+		upperLim : .3,
+		lowerLim : .05,
+		number: 2
+	},
+	guitar:{
+		canSpawn : true,
+		upperLim : 10000,
+		lowerLim : .15,
+		number : 3
+	}
+}
 
 let timeBetweenNotes = 225;
 
@@ -61,6 +86,7 @@ const setupCanvas = (canvasElement,audioList, pastAudioList) =>{
 	pastAudioData[1] = vocalData;
 	pastAudioData[2] = bassData;
 	pastAudioData[3] = guitarData;
+	//spawnOscillatorTrue();
 }
 
 const draw = (params={}) =>{
@@ -98,7 +124,7 @@ const draw = (params={}) =>{
 	// 2 - draw background
 	ctx.save();
 	ctx.globalAlpha = 1;
-    ctx.fillStyle =  "black";
+    ctx.fillStyle =  "white";
     ctx.globalAlpha = .1;
     ctx.fillRect(0,0,canvasWidth,canvasHeight);
     ctx.restore();
@@ -148,51 +174,25 @@ const draw = (params={}) =>{
 				x += percentList[index];
 			}
 			x/=percentList.length;
-			switch(i){
-				case 0:
-					if(drumCanSpawn){
-						if(x > .3){
-							pushNewCircle(i);
-						}
-						drumCanSpawn = false;
-						setTimeout(function(){ drumCanSpawn = true}, timeBetweenNotes);
+
+			for(let index in notesManager){
+				if(notesManager[index].number == i && notesManager[index].canSpawn){
+					if(x > notesManager[index].lowerLim && x < notesManager[index].upperLim){
+						circlesList.push(new Circle(canvasWidth/3 + 100 + 100 * i , -50, 50, 13));
 					}
+					notesManager[index].canSpawn = false;
+					setTimeout(() =>{ notesManager[index].canSpawn = true}, timeBetweenNotes);
 					break;
-				case 1:
-					if(vocalCanSpawn){
-						if(x > .2){
-							pushNewCircle(i);
-						}
-						vocalCanSpawn = false;
-						setTimeout(function(){ vocalCanSpawn = true}, timeBetweenNotes);
-					}
-					break;
-				case 2:
-					if(bassCanSpawn){
-						if(x < .3 && x > .05){
-							pushNewCircle(i);
-						}
-						bassCanSpawn = false;
-						setTimeout(function(){ bassCanSpawn = true}, timeBetweenNotes);
-					}
-					break;
-				case 3:
-					if(guitarCanSpawn){
-						if(x > .15){
-							pushNewCircle(i);
-						}
-						guitarCanSpawn = false;
-						setTimeout(function(){ guitarCanSpawn = true}, timeBetweenNotes);
-					}
-					break;
+				}
 			}
 		}
     }
 
 	for(let index in circlesList){
 		circlesList[index].update();
-		if (circlesList[index].x + circlesList[index].radius < 0) {
+		if (circlesList[index].y - circlesList[index].radius > canvasHeight + 100) {
 			circlesList.splice(index, 1);
+			game.comboBroke();
 		  }
 	}
 
@@ -206,7 +206,6 @@ const draw = (params={}) =>{
 	ctx.restore();
 
 	circlePress();
-
 }
 
 function Circle(x, y, radius, speed) {
@@ -231,51 +230,64 @@ function Circle(x, y, radius, speed) {
 	};
 }
 
-const pushNewCircle = (i) =>{
-	circlesList.push(new Circle(canvasWidth/3 + 100 + 100 * i , -50, 50, 15));
+const checkNoteHit = (number) =>{
+	//rect values
+	const rectLeftX = canvasWidth/3 + number * 100 + 50;
+	const rectTopY = 700;
+	const rectBottomY = 707;
+	const rectWidth = 100;
+
+	let indexer = 0;
+	if (circlesList.length < 12){
+		indexer = circlesList.length;
+	}
+	else{ indexer = 12; }
+	for(let index = 0; index < indexer; index++){
+		//circle values
+		let circleBottomY = circlesList[index].y + circlesList[index].radius;
+		let circleTopY = circlesList[index].y - circlesList[index].radius;
+		let circleCenterX = circlesList[index].x;
+
+		if(rectTopY > circleTopY &&
+			rectBottomY < circleBottomY &&
+			circleCenterX < rectLeftX + rectWidth &&
+			circleCenterX > rectLeftX){
+			circlesList.splice(index, 1);
+			game.increaseScore();
+			game.comboIncrease();
+			break;
+		}
+		else{
+			//game.comboBroke();
+		}
+	}
 }
 
 const circlePress = () =>{
-	if(isKeysPressed.s){
-		ctx.save();
-		ctx.beginPath();
-		ctx.moveTo(canvasWidth/3 + 50,700);
-		ctx.lineTo(canvasWidth/3 + 150,700);
-		ctx.strokeStyle = "red";
-		ctx.lineWidth = 15;
-		ctx.stroke();
-		ctx.restore();
-	}
-	if(isKeysPressed.d){
-		ctx.save();
-		ctx.beginPath();
-		ctx.moveTo(canvasWidth/3 + 150,700);
-		ctx.lineTo(canvasWidth/3 + 250,700);
-		ctx.strokeStyle = "red";
-		ctx.lineWidth = 15;
-		ctx.stroke();
-		ctx.restore();
-	}
-	if(isKeysPressed.j){
-		ctx.save();
-		ctx.beginPath();
-		ctx.moveTo(canvasWidth/3 + 250,700);
-		ctx.lineTo(canvasWidth/3 + 350,700);
-		ctx.strokeStyle = "red";
-		ctx.lineWidth = 15;
-		ctx.stroke();
-		ctx.restore();
-	}
-	if(isKeysPressed.k){
-		ctx.save();
-		ctx.beginPath();
-		ctx.moveTo(canvasWidth/3 + 350,700);
-		ctx.lineTo(canvasWidth/3 + 450,700);
-		ctx.strokeStyle = "red";
-		ctx.lineWidth = 15;
-		ctx.stroke();
-		ctx.restore();
+	for(let index in isKeysPressed){
+		if(isKeysPressed[index].pressed){
+			utils.scoreLineHighlight(ctx, isKeysPressed[index].number * 100 + 50);
+			if(isKeysPressed[index].justPressed){
+				checkNoteHit(isKeysPressed[index].number);
+			}
+		}
 	}
 }
+
+// const spawnOscillatorFalse = () =>{
+// 	setTimeout(() =>{
+// 		allCanSpawn = true;
+// 		spawnOscillatorTrue();
+// 		console.log("now true");
+// 	}, timeBetweenNotes);
+// }
+
+// const spawnOscillatorTrue = () => {
+// 	setTimeout(() =>{
+// 		allCanSpawn = false;
+// 		spawnOscillatorFalse();
+// 		console.log("now false");
+// 	}, timeBetweenNotes);
+// }
 
 export {setupCanvas,draw};

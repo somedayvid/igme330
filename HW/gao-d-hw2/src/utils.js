@@ -19,9 +19,20 @@ const getLinearGradient = (ctx,startX,startY,endX,endY,colorStops) => {
     }
     return lg;
 };
-  
-const drawCircle = () =>{
 
+const scoreLineHighlight = (ctx, startX) =>{
+  drawLine(ctx, ctx.canvas.width/3 + startX, 700, ctx.canvas.width/3 + startX + 100, 700, "red", 15);
+}
+  
+const drawLine = (ctx, x1, y1,x2,y2, strokeStyle, lineWidth) =>{
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(x1,y1);
+  ctx.lineTo(x2,y2);
+  ctx.strokeStyle = strokeStyle;
+  ctx.lineWidth = lineWidth;
+  ctx.stroke();
+  ctx.restore();
 }
 
   // https://developer.mozilla.org/en-US/docs/Web/API/Fullscreen_API
@@ -38,4 +49,4 @@ const goFullscreen = (element) => {
     // .. and do nothing if the method is not supported
 };
   
-export {makeColor, getRandomColor, getLinearGradient, goFullscreen, drawCircle};
+export {makeColor, getRandomColor, getLinearGradient, goFullscreen, scoreLineHighlight};
