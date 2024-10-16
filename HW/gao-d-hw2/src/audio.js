@@ -88,6 +88,10 @@ const individualAudios = (audioPath, object) => {
     object.audioBiquadFilter = audioBiquadFilter;
     object.audioDistortion = audioDistortion;
     object.audioPath = audioPath;
+
+    audioBiquadFilter.type  = "lowshelf";
+    //audioBiquadFilter.frequency.value = 1000;
+    //console.log(audioBiquadFilter);
 }
 
 const loadSoundFile = (filePath, audioElement) => audioElement.src = filePath;
@@ -108,6 +112,8 @@ const playCurrentSound = () => {
         }, 1500);
         firstPass = false;
     }
+    console.log(pastAudioList);
+
 }  
 
 const pauseCurrentSound = () => {
@@ -125,4 +131,40 @@ const setVolume = value => {
     }
 }
 
-export {audioList,pastAudioList,setupWebaudio,playCurrentSound,pauseCurrentSound,loadSoundFile,setVolume};
+const bassBoost = value =>{
+    pastAudioList[2].audioBiquadFilter.type = "lowshelf";
+    pastAudioList[2].audioBiquadFilter.frequency.value = 1000;
+    pastAudioList[2].audioBiquadFilter.gain.value = value;
+}
+
+const trebleBoost = value =>{
+    pastAudioList[0].audioBiquadFilter.type = "highshelf";
+    pastAudioList[0].audioBiquadFilter.frequency.value = 2000;
+    pastAudioList[0].audioBiquadFilter.gain.value = value;
+    pastAudioList[1].audioBiquadFilter.type = "highshelf";
+    pastAudioList[1].audioBiquadFilter.frequency.value = 2000;
+    pastAudioList[1].audioBiquadFilter.gain.value = value;
+    pastAudioList[3].audioBiquadFilter.type = "highshelf";
+    pastAudioList[3].audioBiquadFilter.frequency.value = 2000;
+    pastAudioList[3].audioBiquadFilter.gain.value = value;
+}
+
+const doCurve = () =>{
+    function makeDistortionCurve(amount) {
+        const k = typeof amount === "number" ? amount : 50;
+        const n_samples = 44100;
+        const curve = new Float32Array(n_samples);
+        const deg = Math.PI / 180;
+      
+        for (let i = 0; i < n_samples; i++) {
+          const x = (i * 2) / n_samples - 1;
+          curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+        }
+        return curve;
+      }
+      
+      pastAudioList[3].audioDistortion.curve = makeDistortionCurve(100);
+      pastAudioList[3].audioDistortion.oversample = "4x";
+}
+
+export {audioList,pastAudioList,setupWebaudio,playCurrentSound,pauseCurrentSound,loadSoundFile,setVolume, bassBoost,trebleBoost,doCurve};

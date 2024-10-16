@@ -106,23 +106,23 @@ function setupUI(canvasElement){
   invertCheckBox.checked = drawParams.showInvert;
   embossCheckBox.checked = drawParams.showEmboss;
 
-  gradiantCheckBox.onchange = () =>{
-    drawParams.showGradient = gradiantCheckBox.checked;
+  gradiantCheckBox.onchange = (e) =>{
+    drawParams.showGradient = e.checked;
   }
-  barsCheckBox.onchange = () =>{
-    drawParams.showBars = barsCheckBox.checked;
+  barsCheckBox.onchange = (e) =>{
+    drawParams.showBars = e.checked;
   }
-  circlesCheckBox.onchange = () =>{
-    drawParams.showCircles = circlesCheckBox.checked;
+  circlesCheckBox.onchange = (e) =>{
+    drawParams.showCircles = e.checked;
   }
-  noiseCheckBox.onchange = () =>{
-    drawParams.showNoise = noiseCheckBox.checked;
+  noiseCheckBox.onchange = (e) =>{
+    drawParams.showNoise = e.checked;
   }
-  invertCheckBox.onchange = () =>{
-    drawParams.showInvert = invertCheckBox.checked;
+  invertCheckBox.onchange = (e) =>{
+    drawParams.showInvert = e.checked;
   }
-  embossCheckBox.onchange = () =>{
-    drawParams.showEmboss = embossCheckBox.checked;
+  embossCheckBox.onchange = (e) =>{
+    drawParams.showEmboss = e.checked;
   }
 } // end setupUI
 export {init};

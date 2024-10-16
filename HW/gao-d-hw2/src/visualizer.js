@@ -16,7 +16,7 @@ let pastAudioData = [];
 
 let circlesList = [];
 
-//let allCanSpawn = true;
+let allCanSpawn = true;
 
 let notesManager = {
 	drums:{
@@ -32,7 +32,7 @@ let notesManager = {
 		number : 1
 	},
 	bass:{
-		canSpwan : true,
+		canSpawn : true,
 		upperLim : .3,
 		lowerLim : .05,
 		number: 2
@@ -169,6 +169,7 @@ const draw = (params={}) =>{
 				let percent = audioData[i][j] / 255;
 				percentList.push(percent);
 			}
+	
 			let x = 0;
 			for(let index in percentList){
 				x += percentList[index];
@@ -176,13 +177,14 @@ const draw = (params={}) =>{
 			x/=percentList.length;
 
 			for(let index in notesManager){
-				if(notesManager[index].number == i && notesManager[index].canSpawn){
+				if(notesManager[index].number == i && notesManager[index].canSpawn && allCanSpawn){
 					if(x > notesManager[index].lowerLim && x < notesManager[index].upperLim){
 						circlesList.push(new Circle(canvasWidth/3 + 100 + 100 * i , -50, 50, 13));
+						notesManager[index].canSpawn = false;
+						setTimeout(() =>{ notesManager[index].canSpawn = true}, timeBetweenNotes);
+						break;
 					}
-					notesManager[index].canSpawn = false;
-					setTimeout(() =>{ notesManager[index].canSpawn = true}, timeBetweenNotes);
-					break;
+				
 				}
 			}
 		}
@@ -257,9 +259,7 @@ const checkNoteHit = (number) =>{
 			game.comboIncrease();
 			break;
 		}
-		else{
-			//game.comboBroke();
-		}
+		//else if(slightly off){}
 	}
 }
 
@@ -279,7 +279,7 @@ const circlePress = () =>{
 // 		allCanSpawn = true;
 // 		spawnOscillatorTrue();
 // 		console.log("now true");
-// 	}, timeBetweenNotes);
+// 	}, timeBetweenNotes/2);
 // }
 
 // const spawnOscillatorTrue = () => {
@@ -287,7 +287,7 @@ const circlePress = () =>{
 // 		allCanSpawn = false;
 // 		spawnOscillatorFalse();
 // 		console.log("now false");
-// 	}, timeBetweenNotes);
+// 	}, timeBetweenNotes/2);
 // }
 
 export {setupCanvas,draw};

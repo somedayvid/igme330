@@ -22,5 +22,4 @@ const update = () => {
 
 }
 
-
 export {increaseScore, update, comboBroke, comboIncrease};

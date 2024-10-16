@@ -60,7 +60,7 @@ const init = () => {
 
 const setupUI = canvasElement =>{
   // A - hookup fullscreen button
-  const fsButton = document.querySelector("#fsButton");
+  const fsButton = document.querySelector("#fs-button");
 	
   // add .onclick event to button
   fsButton.onclick = e => {
@@ -69,7 +69,7 @@ const setupUI = canvasElement =>{
 	
   //HERE IS A SPOT TO MAKE WORK WITH OTHER SPOTS
   //add .onclick even to button
-  playButton.onclick = e => {
+  document.querySelector("#play-button").onclick = e => {
     //check if context is in suspended state (autoplay policy)
     if(audio.audioList[0].audioCtx.state == "suspended"){
         audio.audioList[0].audioCtx.resume();
@@ -90,8 +90,8 @@ const setupUI = canvasElement =>{
   };
 
   // C - hookup volume slider and label
-  let volumeSlider = document.querySelector("#volumeSlider");
-  let volumeLabel = document.querySelector("#volumeLabel");
+  let volumeSlider = document.querySelector("#volume-slider");
+  let volumeLabel = document.querySelector("#volume-label");
 
   //add .oninput event to slider
   volumeSlider.oninput = e => {
@@ -105,7 +105,7 @@ const setupUI = canvasElement =>{
   volumeSlider.dispatchEvent(new Event("input"));
 
   //D - hookup track <select>
-  let trackSelect = document.querySelector("#trackSelect");
+  let trackSelect = document.querySelector("#track-select");
   //add .onchange event to <select>
   trackSelect.onchange = e => {
     audio.loadSoundFile(e.target.value);
@@ -171,6 +171,37 @@ const setupUI = canvasElement =>{
   muteGuitar.onclick = () =>{
     audioChange(3);
   }
+
+  let boostSlider = document.querySelector("#bass-boost-slider");
+  let boostLabel = document.querySelector("#bass-boost-label");
+
+  //add .oninput event to slider
+  boostSlider.oninput = e => {
+    //set the gain
+    audio.bassBoost(e.target.value);
+    //update value of label to match value of slider
+    boostLabel.innerHTML = Math.round(e.target.value);
+  };
+  //set value of label to match innitial value of slider
+  boostSlider.dispatchEvent(new Event("input"));
+
+  let trebleSlider = document.querySelector("#treble-boost-slider");
+  let trebleLabel = document.querySelector("#treble-boost-label");
+
+  //add .oninput event to slider
+  trebleSlider.oninput = e => {
+    //set the gain
+    audio.trebleBoost(e.target.value);
+    //update value of label to match value of slider
+    trebleLabel.innerHTML = e.target.value;
+  };
+  //set value of label to match innitial value of slider
+  trebleSlider.dispatchEvent(new Event("input"));
+
+  document.querySelector("#wave").onclick = () =>{
+    audio.doCurve();
+  }
+
 
   document.addEventListener('keydown', function(e){
     if(e.key == 's' || e.key == 'd' || e.key == 'j' || e.key == 'k')
