@@ -9,6 +9,7 @@
 <body>
 <main>
   <canvas width="800" height="400"></canvas>
+  <div id="ui-container">
   <section id="score-info">
     <div id="score-display">
 
@@ -27,7 +28,10 @@
 		
       <label>Track: 
         <select id="track-select">
-          <option value="media/NECRY TALKIE - bloom.mp3" selected>Bloom</option>
+          <option value="Taking What's Not Yours - TV Girl" selected>Taking What's Not Yours</option>
+          <option value="Brain Stew - Green Day" >Brain Stew</option>
+          <option value="Shadow World - Shihoko Hirata" >Shadow World</option>
+          <option value="Bloom - Necry Talkie" >Bloom</option>
         </select>
       </label>
     </section>
@@ -53,17 +57,13 @@
       </section>
       <button id="wave"> Wave  </button>
 
-      <button id="drum-mute-CB"> Mute Drums  </button>
-      <button id="vocal-mute-CB"> Mute Vocals </button>
-      <button id="bass-mute-CB">  Mute Bass    </button>
-      <button id="guitar-mute-CB">Mute Guitar</button>
-
       <label for="type-data-select">Choose an audio data type:</label>
       <select name="type-data-select" id="type-data-select">
         <option value="frequency">Frequency Data</option>
         <option value="waveform">Waveform Data</option>
       </select>
     </section>  
+  </div>
   </div>
 </main>
 </body>

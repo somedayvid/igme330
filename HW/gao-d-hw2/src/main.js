@@ -2,9 +2,11 @@ import * as utils from './utils.js';
 import * as audio from './audio.js';
 import * as canvas from './visualizer.js'
 import * as game from './gameManager.js'
+import { readAppData } from './dataReader.js';
 
 export let dataType;
 export let paused = false;
+let songSelectionData = {};
 
 let isKeysPressed = {
   s: {
@@ -44,17 +46,30 @@ const drawParams = {
 
 // 1 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
-	bass  : "media/Bass.mp3",
-  drums : "media/Drums.mp3",
-  guitar: "media/Guitar.mp3",
-  vocals: "media/Vocals.mp3"
+	bass  : "media/Taking What's Not Yours - TV Girl/bass.mp3",
+  drums : "media/Taking What's Not Yours - TV Girl/drums.mp3",
+  guitar: "media/Taking What's Not Yours - TV Girl/instrumental.mp3",
+  vocals: "media/Taking What's Not Yours - TV Girl/other.mp3",
+  fullSong: "media/Taking What's Not Yours - TV Girl/original.mp3"
 });
 
 const init = () => {
-  audio.setupWebaudio(DEFAULTS.bass,DEFAULTS.drums,DEFAULTS.guitar,DEFAULTS.vocals);
+  audio.setupWebaudio(DEFAULTS.bass,DEFAULTS.drums,DEFAULTS.guitar,DEFAULTS.vocals, DEFAULTS.fullSong);
 	let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
+  // Load all app & shape data once when the page loads
+  // Define a callback function to handle the data
+const handleData = (data) => {
+  console.log('Data loaded:', data);
+  
+  songSelectionData = data;
+
+  console.log('Some property:', songSelectionData.songs);
+};
+
+// Call `readAppData` and pass the callback function
+  readAppData(handleData);
 	setupUI(canvasElement);
-  canvas.setupCanvas(canvasElement,audio.audioList, audio.pastAudioList);
+  canvas.setupCanvas(canvasElement,audio.audioList, audio.fullSong);
   loop();
 }
 
@@ -69,11 +84,12 @@ const setupUI = canvasElement =>{
 	
   //HERE IS A SPOT TO MAKE WORK WITH OTHER SPOTS
   //add .onclick even to button
-  document.querySelector("#play-button").onclick = e => {
+  const playButton = document.querySelector("#play-button");
+  playButton.onclick = e => {
     //check if context is in suspended state (autoplay policy)
     if(audio.audioList[0].audioCtx.state == "suspended"){
         audio.audioList[0].audioCtx.resume();
-        audio.pastAudioList[0].audioCtx.resume();
+        audio.fullSong.audioCtx.resume();
     }
     if(e.target.dataset.playing == "no"){
         // if track is currently paused, play it
@@ -108,10 +124,11 @@ const setupUI = canvasElement =>{
   let trackSelect = document.querySelector("#track-select");
   //add .onchange event to <select>
   trackSelect.onchange = e => {
-    audio.loadSoundFile(e.target.value);
+    audio.loadBeatsAndSong(e.target.value);
     //pause the current track if it is playing
     if(playButton.dataset.playing == "yes"){
         playButton.dispatchEvent(new MouseEvent("click"));
+        canvas.clearAll();
     }
   };
 
@@ -154,24 +171,6 @@ const setupUI = canvasElement =>{
     drawParams.showEmboss = embossCheckBox.checked;
   }
 
-  const muteDrums = document.querySelector("#drum-mute-CB");
-  const muteVocals = document.querySelector("#vocal-mute-CB");
-  const muteBass = document.querySelector("#bass-mute-CB");
-  const muteGuitar = document.querySelector("#guitar-mute-CB");
-
-  muteDrums.onclick = () =>{
-    audioChange(0);
-  }
-  muteVocals.onclick = () =>{
-    audioChange(1);
-  }
-  muteBass.onclick = () =>{
-    audioChange(2);
-  }
-  muteGuitar.onclick = () =>{
-    audioChange(3);
-  }
-
   let boostSlider = document.querySelector("#bass-boost-slider");
   let boostLabel = document.querySelector("#bass-boost-label");
 
@@ -210,11 +209,9 @@ const setupUI = canvasElement =>{
       if(isKeysPressed[e.key].released){
         isKeysPressed[e.key].justPressed = true;
         isKeysPressed[e.key].released = false;
-      }
-      else{
         setTimeout(() => {
           isKeysPressed[e.key].justPressed = false;
-        }, 100);
+        }, 100);        
       }
     }
   })
@@ -225,18 +222,8 @@ const setupUI = canvasElement =>{
       isKeysPressed[e.key].released = true;
     } 
   })
-
 } // end setupUI
 export {init, isKeysPressed};
-
-const audioChange = x =>{
-  if(audio.pastAudioList[x].audioGainNode.gain.value == 0){
-    audio.pastAudioList[x].audioGainNode.gain.value = volumeSlider.value;
-  }
-  else{
-    audio.pastAudioList[x].audioGainNode.gain.value = 0
-  }
-}
 
 const loop = () =>{
   if(dataType == "frequency"){

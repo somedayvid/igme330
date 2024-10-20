@@ -6,17 +6,20 @@ import * as game from './gameManager.js';
 
 let ctx,canvasWidth,canvasHeight,gradient, drumData,bassData,guitarData,vocalData;
 
-let drumData2, bassData2, guitarData2, vocalData2;
-
 let nodeRefList = [];
-let pastNodeRefList = [];
 
 let audioData = [];
-let pastAudioData = [];
 
-let circlesList = [];
+let fullSongAnalyser;
+let fullSongData;
+
+let column1 =[],column2 = [],column3 = [],column4 = [], hitQualityList = [];
+
+let arrowsList = [ column1, column2, column3, column4];
 
 let allCanSpawn = true;
+
+let canvasStartX;
 
 let notesManager = {
 	drums:{
@@ -45,24 +48,28 @@ let notesManager = {
 	}
 }
 
+let noteHitterOutline = [];
+
 let timeBetweenNotes = 225;
 
-const setupCanvas = (canvasElement,audioList, pastAudioList) =>{
+
+const setupCanvas = (canvasElement,audioList, fullSong) =>{
 	// create drawing context
 	ctx = canvasElement.getContext("2d");
 	canvasElement.width = window.innerWidth;
 	canvasElement.height = window.innerHeight + 10;
 	canvasWidth = canvasElement.width;
 	canvasHeight = canvasElement.height;
-	// create a gradient that runs top to bottom
-	//gradient = utils.getLinearGradient(ctx,0,0,0,canvasHeight,[{percent:0,color:"#61ff69"},{percent:.5,color:"#ff6961"},{percent:1,color:"#6961ff"}]);
+
+	canvasStartX = 30;
+
 	// keep a reference to the analyser node
+	fullSongAnalyser = fullSong.audioAnalyser;
+	// this is the array where the analyser data will be stored
+	fullSongData = new Uint8Array(fullSongAnalyser.fftSize/2);
 
 	for(let nodeIndex in audioList){
 		nodeRefList[nodeIndex] = audioList[nodeIndex].audioAnalyser;
-	}
-	for(let nodeIndex in pastAudioList){
-		pastNodeRefList[nodeIndex] = pastAudioList[nodeIndex].audioAnalyser;
 	}
 
 	// this is the array where the analyser data will be stored
@@ -71,28 +78,20 @@ const setupCanvas = (canvasElement,audioList, pastAudioList) =>{
 	bassData = new Uint8Array(nodeRefList[2].fftSize/2);
     guitarData = new Uint8Array(nodeRefList[3].fftSize/2);
 
-	drumData2 = new Uint8Array(pastNodeRefList[0].fftSize/2);
-	vocalData2 = new Uint8Array(pastNodeRefList[1].fftSize/2);
-	bassData2 = new Uint8Array(pastNodeRefList[2].fftSize/2);
-    guitarData2 = new Uint8Array(pastNodeRefList[3].fftSize/2);
-
-
 	audioData[0] = drumData;
 	audioData[1] = vocalData;
 	audioData[2] = bassData;
 	audioData[3] = guitarData;
 
-	pastAudioData[0] = drumData2;
-	pastAudioData[1] = vocalData;
-	pastAudioData[2] = bassData;
-	pastAudioData[3] = guitarData;
-	//spawnOscillatorTrue();
+	for(let i = 0; i < 4; i++){
+		noteHitterOutline.push(new Arrow(ctx, canvasStartX + 65 + 125 * i , 700, Math.PI/2 * i, false));
+	}
 }
 
 const draw = (params={}) =>{
 	ctx.save();
-	ctx.fillStyle = "red";
-	ctx.rect(canvasWidth/3, 0, canvasWidth/3, canvasHeight);
+	ctx.fillStyle = "black";
+	ctx.rect(0,0, canvasWidth, canvasHeight);
 	ctx.fill();
 	ctx.restore();
 
@@ -104,10 +103,7 @@ const draw = (params={}) =>{
 		nodeRefList[2].getByteFrequencyData(bassData);
 		nodeRefList[3].getByteFrequencyData(guitarData);
 
-		pastNodeRefList[0].getByteFrequencyData(drumData2);
-		pastNodeRefList[1].getByteFrequencyData(vocalData2);
-		pastNodeRefList[2].getByteFrequencyData(bassData2);
-		pastNodeRefList[3].getByteFrequencyData(guitarData2);
+		fullSongAnalyser.getByteFrequencyData(fullSongData);
     }
     else if(dataType == "waveform"){
 		nodeRefList[0].getByteTimeDomainData(drumData);
@@ -115,10 +111,7 @@ const draw = (params={}) =>{
 		nodeRefList[2].getByteTimeDomainData(bassData);
 		nodeRefList[3].getByteTimeDomainData(guitarData);
 
-		pastNodeRefList[0].getByteTimeDomainData(drumData2);
-		pastNodeRefList[1].getByteTimeDomainData(vocalData2);
-		pastNodeRefList[2].getByteTimeDomainData(bassData2);
-		pastNodeRefList[3].getByteTimeDomainData(guitarData2);
+		fullSongAnalyser.getByteTimeDomainData(fullSongData);
     }
 	
 	// 2 - draw background
@@ -129,165 +122,290 @@ const draw = (params={}) =>{
     ctx.fillRect(0,0,canvasWidth,canvasHeight);
     ctx.restore();
 		
-	// 3 - draw gradient
-	// if(params.showGradient){
-    //     ctx.save();
-    //     ctx.fillStyle = gradient;
-    //     ctx.globalAlpha = .8;
-    //     ctx.fillRect(0,0,canvasWidth,canvasHeight);
-    //     ctx.restore();
-    // }
-	// // 5 - draw circles
 	if(params.showCircles){
 		let maxRadius = canvasHeight/5;
 
 		//draws the audio beat representation 
-		for(let i = 0; i < pastAudioData.length; i++){
-			for(let j = 0; j < pastAudioData[i].length; j++){
-				let percent = pastAudioData[i][j] / 255;
-				
-				let circleRadius = percent * maxRadius;
-				ctx.save();
-				ctx.beginPath();
-				ctx.fillStyle = utils.makeColor(i * 80, i * 80,i * 80,.34-percent/3.0);
-				if(i > 1){
-					ctx.arc(250 + (i % 2) * 1000, 600,circleRadius, 0, 2 * Math.PI, false);
-				}
-				else{
-					ctx.arc(250 + (i % 2) * 1000, 300,circleRadius, 0, 2 * Math.PI, false);
-				}
-				ctx.fill();
-				ctx.closePath();
-				ctx.restore();
-			}
+		for(let i = 0; i < fullSongData.length; i++){
+			let percent = fullSongData[i] / 255;
+			let circleRadius = percent * maxRadius;
+		
+			ctx.save();
+			ctx.beginPath();
+			ctx.fillStyle = utils.makeColor(i * 80, i * 80,i * 80,.34-percent/3.0);
+			ctx.arc(800, 600,circleRadius, 0, 2 * Math.PI, false);			
+			ctx.fill();
+			ctx.closePath();
 		}
+		ctx.restore();
+	}
 
-		//draws the notes that move
-		for(let i = 0; i < audioData.length; i++){
-			let percentList = [];
-			for(let j = 0; j < audioData[i].length; j++){
-				let percent = audioData[i][j] / 255;
-				percentList.push(percent);
-			}
-	
-			let x = 0;
-			for(let index in percentList){
-				x += percentList[index];
-			}
-			x/=percentList.length;
+	// Draw lines based on frequency data
+	const barWidth = canvasWidth/fullSongData.length;
+	let x = canvasWidth;
 
-			for(let index in notesManager){
-				if(notesManager[index].number == i && notesManager[index].canSpawn && allCanSpawn){
-					if(x > notesManager[index].lowerLim && x < notesManager[index].upperLim){
-						circlesList.push(new Circle(canvasWidth/3 + 100 + 100 * i , -50, 50, 13));
-						notesManager[index].canSpawn = false;
-						setTimeout(() =>{ notesManager[index].canSpawn = true}, timeBetweenNotes);
-						break;
-					}
-				
-				}
-			}
-		}
+	ctx.save();
+	ctx.lineWidth = 10;
+	for (let i = fullSongData.length - 1; i > 0; i--) {
+		const barHeight = fullSongData[i];
+		const hue = i * 2; // Varying hue for color effect
+
+		ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+		ctx.beginPath();
+		ctx.moveTo(x, 0);
+		ctx.lineTo(x, (canvasHeight / 2) - barHeight);
+		ctx.stroke();
+
+		x -= barWidth;
+	}	
+	ctx.restore();
+
+	let z = 0;
+	// Draw a single line representing the frequency
+    const sliceWidth = canvasWidth / fullSongData.length;
+	ctx.save();
+	ctx.beginPath();
+    for (let i = 0; i < fullSongData.length; i++) {
+        const value = fullSongData[i];
+        let y = (canvasHeight / 2) - (value / 255) * canvasHeight / 2;
+
+        if (i == 0) {
+            ctx.moveTo(z, y);
+        } else {
+            ctx.lineTo(z, y);
+        }
+
+        z += sliceWidth;
     }
 
-	for(let index in circlesList){
-		circlesList[index].update();
-		if (circlesList[index].y - circlesList[index].radius > canvasHeight + 100) {
-			circlesList.splice(index, 1);
-			game.comboBroke();
-		  }
+    ctx.strokeStyle = 'rgb(0, 255, 0)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+	ctx.restore();
+	
+	//draws the notes that move
+	for(let i = 0; i < audioData.length; i++){
+		let percentList = [];
+		for(let j = 0; j < audioData[i].length; j++){
+			let percent = audioData[i][j] / 255;
+			percentList.push(percent);
+		}
+
+		let x = 0;
+		for(let index in percentList){
+			x += percentList[index];
+		}
+		x/=percentList.length;
+		for(let index in notesManager){
+			if(notesManager[index].number == i && notesManager[index].canSpawn && allCanSpawn){
+				if(x > notesManager[index].lowerLim && x < notesManager[index].upperLim){
+					arrowsList[notesManager[index].number].push(new Arrow(ctx, canvasStartX + 65 + 125 * i , -50, Math.PI/2 * i,true, 15));
+					notesManager[index].canSpawn = false;
+					setTimeout(() =>{ notesManager[index].canSpawn = true}, timeBetweenNotes);
+					break;
+				}
+			}
+		}
 	}
 
 	ctx.save();
-	ctx.beginPath();
-	ctx.moveTo(canvasWidth/3,700);
-	ctx.lineTo(canvasWidth/3 + canvasWidth/3,700);
-	ctx.strokeStyle = "yellow";
-	ctx.lineWidth = 15;
-	ctx.stroke();
+	ctx.fillStyle = "white";
+	ctx.rect(30, 0, canvasWidth/3, canvasHeight);
+	ctx.fill();
 	ctx.restore();
 
-	circlePress();
+	for(let index in arrowsList){
+		for(let furtherIndex in arrowsList[index]){
+			arrowsList[index][furtherIndex].update();
+		}
+		if(arrowsList[index].length > 0){ //code for deleting the notes 
+			if(arrowsList[index][0].expired){
+				arrowsList[index].splice(0, 1);
+			}
+			else if(arrowsList[index][0].missed){
+				arrowsList[index].splice(0, 1);
+				hitQualityList.push(new HitQualityDisplay(canvasStartX + 65 + 125 * index, 0));
+			}
+			else if (arrowsList[index][0].y >= 710) {
+				arrowsList[index][0].noteRest();
+			}
+
+		}
+	}
+
+	if(hitQualityList.length > 0){
+		for(let i = hitQualityList.length - 1; i >= 0; i--){
+			hitQualityList[i].update();
+			if(hitQualityList[i].expired){
+				hitQualityList.splice(i,1);
+			}
+		}
+	}
+	
+	//draws the arrow outline for when the player is supposed to hit
+	for(let i = 0; i < noteHitterOutline.length;i++){
+		noteHitterOutline[i].update();
+	}
+
+	//highlights the arrows when player presses the keys
+	for(let index in isKeysPressed){
+		noteHitterOutline[isKeysPressed[index].number].highlight = isKeysPressed[index].pressed;
+		if(isKeysPressed[index].justPressed){
+			const numberino = checkNoteHit(isKeysPressed[index].number);
+			if(numberino != -1){
+				hitQualityList.push(new HitQualityDisplay(canvasStartX + 65 + 125 * isKeysPressed[index].number, numberino));
+			}
+		}
+	}
 }
 
-function Circle(x, y, radius, speed) {
+function Arrow(ctx, x, y, rotation, active = true, width = 5) {
 	this.x = x;
 	this.y = y;
-	this.radius = radius;
-	this.speed = speed;
+	this.width = width;
+	this.speed = 13;
+	this.rotation = rotation
+	this.active = active;
+	this.highlight = false;
+	this.expired = false;
+	this.missed = false;
+	this.waiting = false;
 	
-	this.draw = function() {
-	  ctx.beginPath();
-	  ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-	  ctx.fillStyle = 'blue';
-	  ctx.fill();
-	  ctx.closePath();
+	this.draw = () => {
+		let color;
+		if(this.highlight){
+			color = "red";
+		}
+		else if(!this.active){
+			color = "purple";
+		}
+		else{
+			color = "black";
+		}
+		utils.drawArrow(ctx,this.x,this.y, rotation, color, this.width);
 	};
-  
-	this.update = function() {
-		if(!paused){
+
+	this.noteRest = () =>{
+		if(!this.waiting){
+			this.waiting = true;
+			setTimeout(() => {
+				this.missed = true;
+			}, 150);
+		}
+	}
+
+	this.makeExpired = () =>{
+		this.expired = true;
+	}
+
+	this.update = () => {
+		if(!paused && active && !this.waiting){
 			this.y += this.speed;
 		}
 		this.draw();
 	};
 }
 
-const checkNoteHit = (number) =>{
-	//rect values
-	const rectLeftX = canvasWidth/3 + number * 100 + 50;
-	const rectTopY = 700;
-	const rectBottomY = 707;
-	const rectWidth = 100;
+function HitQualityDisplay(x, hitQuality){
+	this.x = x;
+	this.y = 750;
+	this.speed = 1;
+	this.expired = false;
+	this.alpha = 1;
 
-	let indexer = 0;
-	if (circlesList.length < 12){
-		indexer = circlesList.length;
-	}
-	else{ indexer = 12; }
-	for(let index = 0; index < indexer; index++){
-		//circle values
-		let circleBottomY = circlesList[index].y + circlesList[index].radius;
-		let circleTopY = circlesList[index].y - circlesList[index].radius;
-		let circleCenterX = circlesList[index].x;
-
-		if(rectTopY > circleTopY &&
-			rectBottomY < circleBottomY &&
-			circleCenterX < rectLeftX + rectWidth &&
-			circleCenterX > rectLeftX){
-			circlesList.splice(index, 1);
-			game.increaseScore();
-			game.comboIncrease();
+	switch(hitQuality){
+		case 3:
+			this.text = "PERFECT!";
 			break;
-		}
-		//else if(slightly off){}
+		case 2:
+			this.text = "GREAT!";
+			break;
+		case 1: 
+			this.text = "GOOD!";
+			break;
+		case 0:
+			this.text = "MISS!";
+			break;
+		case -1:
+			break;
 	}
+
+	this.init = () =>{
+		setTimeout(() =>{
+			this.expired = true;
+		}, 250);
+	}
+	this.draw = () =>{
+		ctx.save();
+		ctx.fillStyle = `rgba(0, 0, 0, ${this.alpha})`;
+		ctx.rect(this.x, this.y, 100,100);
+		ctx.fill();
+		ctx.fillStyle = "white";
+		ctx.fillText(this.text,this.x + 25,this.y + 50);
+		ctx.restore();
+	}
+	this.update = () =>{
+		this.y -= this.speed;
+		this.x += this.speed;
+		this.draw();
+		this.alpha *= .9;
+	}
+	this.init();
 }
 
-const circlePress = () =>{
-	for(let index in isKeysPressed){
-		if(isKeysPressed[index].pressed){
-			utils.scoreLineHighlight(ctx, isKeysPressed[index].number * 100 + 50);
-			if(isKeysPressed[index].justPressed){
-				checkNoteHit(isKeysPressed[index].number);
+const checkNoteHit = (number) =>{
+	for(let index in arrowsList){
+		if(arrowsList[index].length > 0){
+			const x = hitQualityCheck(arrowsList[index][0].y,noteHitterOutline[number].y);
+			switch(x){
+				case 0: 
+					arrowsList[index][0].makeExpired();
+				case -1:
+					game.comboBroke();
+					break;
+				case 1:
+				case 2:
+				case 3:
+					arrowsList[index][0].makeExpired();
+					continueCombo(index);
+					break;
+				default:
+					break;
 			}
+			return x;
 		}
+		else{ return -1; }
 	}
 }
 
-// const spawnOscillatorFalse = () =>{
-// 	setTimeout(() =>{
-// 		allCanSpawn = true;
-// 		spawnOscillatorTrue();
-// 		console.log("now true");
-// 	}, timeBetweenNotes/2);
-// }
+const continueCombo = (index) =>{
+	arrowsList[index].splice(0,1);
+	game.increaseScore();
+	game.comboIncrease();
+}
 
-// const spawnOscillatorTrue = () => {
-// 	setTimeout(() =>{
-// 		allCanSpawn = false;
-// 		spawnOscillatorFalse();
-// 		console.log("now false");
-// 	}, timeBetweenNotes/2);
-// }
+const hitQualityCheck = (y1, y2) =>{
+	const difference = Math.abs(y1 - y2);
+	if(difference < 50 ){
+		return 3;
+	}
+	else if(difference < 60){
+		return 2;
+	}
+	else if(difference < 75){
+		return 1;
+	}
+	else if(difference < 90){
+		return 0;
+	}
+	else {return -1;}
+}
 
-export {setupCanvas,draw};
+const clearAll = () =>{
+	for(let index in arrowsList){
+		arrowsList[index] = [];
+	}
+}
+
+
+export {setupCanvas,draw, clearAll};

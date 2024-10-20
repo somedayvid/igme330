@@ -1,14 +1,11 @@
 let audioList = [];
-let pastAudioList = [];
 
 let drums = {};
-let drums2 = {};
 let vocals = {};
-let vocals2 = {};
 let bass = {};
-let bass2 = {};
 let guitar = {};
-let guitar2 = {};
+
+let fullSong = {};
 
 let firstPass = true;
 
@@ -23,26 +20,18 @@ const DEFAULTS = Object.freeze({
 let audioData = new Uint8Array(DEFAULTS.numSamples/2);
 
 // **Next are "public" methods - we are going to export all of these at the bottom of this file**
-const setupWebaudio = (bassPath, drumsPath, guitarPath, vocalPath) =>{
+const setupWebaudio = (bassPath, drumsPath, guitarPath, vocalPath, fullSongPath) =>{
     individualAudios(drumsPath, drums);
     individualAudios(vocalPath, vocals);
     individualAudios(bassPath, bass);
     individualAudios(guitarPath, guitar);
 
-    individualAudios(drumsPath, drums2);
-    individualAudios(vocalPath, vocals2);
-    individualAudios(bassPath, bass2);
-    individualAudios(guitarPath, guitar2);
+    individualAudios(fullSongPath, fullSong);
     
     audioList[0] = drums;
     audioList[1] = vocals;
     audioList[2] = bass;
     audioList[3] = guitar;
-
-    pastAudioList[0] = drums2;
-    pastAudioList[1] = vocals2;
-    pastAudioList[2] = bass2;
-    pastAudioList[3] = guitar2;
 }
 
 const individualAudios = (audioPath, object) => {
@@ -90,63 +79,59 @@ const individualAudios = (audioPath, object) => {
     object.audioPath = audioPath;
 
     audioBiquadFilter.type  = "lowshelf";
-    //audioBiquadFilter.frequency.value = 1000;
-    //console.log(audioBiquadFilter);
 }
 
 const loadSoundFile = (filePath, audioElement) => audioElement.src = filePath;
+
+const loadBeatsAndSong = (filepath) =>{
+    loadSoundFile(`media/${filepath}/drums.mp3`,audioList[0].audioElement)
+    loadSoundFile(`media/${filepath}/other.mp3`,audioList[1].audioElement)
+    loadSoundFile(`media/${filepath}/bass.mp3`,audioList[2].audioElement)
+    loadSoundFile(`media/${filepath}/instrumental.mp3`,audioList[3].audioElement)
+
+    loadSoundFile(`media/${filepath}/original.mp3`,fullSong.audioElement);
+    firstPass = true;
+}
 
 const playCurrentSound = () => {
     for(let soundIndex in audioList){
         audioList[soundIndex].audioGainNode.gain.value = 0;
         audioList[soundIndex].audioElement.play();
         if(!firstPass){
-            pastAudioList[soundIndex].audioElement.play();
+            fullSong.audioElement.play();
         }
     }
     if(firstPass){
         setTimeout(function(){
-            for(let soundIndex in pastAudioList){
-                pastAudioList[soundIndex].audioElement.play();
-            }
+                fullSong.audioElement.play();
         }, 1500);
         firstPass = false;
     }
-    console.log(pastAudioList);
-
 }  
 
 const pauseCurrentSound = () => {
     for(let soundIndex in audioList){
         audioList[soundIndex].audioElement.pause();
-        pastAudioList[soundIndex].audioElement.pause();
+        fullSong.audioElement.pause();
     }
 }
 
 const setVolume = value => {
     // make sure that it's a Number rather than a String
     value = Number(value);
-    for(let soundIndex in pastAudioList){
-        pastAudioList[soundIndex].audioGainNode.gain.value = value;
-    }
+    fullSong.audioGainNode.gain.value = value;
 }
 
 const bassBoost = value =>{
-    pastAudioList[2].audioBiquadFilter.type = "lowshelf";
-    pastAudioList[2].audioBiquadFilter.frequency.value = 1000;
-    pastAudioList[2].audioBiquadFilter.gain.value = value;
+    fullSong.audioBiquadFilter.type = "lowshelf";
+    fullSong.audioBiquadFilter.frequency.value = 1000;
+    fullSong.audioBiquadFilter.gain.value = value;
 }
 
 const trebleBoost = value =>{
-    pastAudioList[0].audioBiquadFilter.type = "highshelf";
-    pastAudioList[0].audioBiquadFilter.frequency.value = 2000;
-    pastAudioList[0].audioBiquadFilter.gain.value = value;
-    pastAudioList[1].audioBiquadFilter.type = "highshelf";
-    pastAudioList[1].audioBiquadFilter.frequency.value = 2000;
-    pastAudioList[1].audioBiquadFilter.gain.value = value;
-    pastAudioList[3].audioBiquadFilter.type = "highshelf";
-    pastAudioList[3].audioBiquadFilter.frequency.value = 2000;
-    pastAudioList[3].audioBiquadFilter.gain.value = value;
+    fullSong.audioBiquadFilter.type = "highshelf";
+    fullSong.audioBiquadFilter.frequency.value = 2000;
+    fullSong.audioBiquadFilter.gain.value = value;
 }
 
 const doCurve = () =>{
@@ -163,8 +148,8 @@ const doCurve = () =>{
         return curve;
       }
       
-      pastAudioList[3].audioDistortion.curve = makeDistortionCurve(100);
-      pastAudioList[3].audioDistortion.oversample = "4x";
+      fullSong.audioDistortion.curve = makeDistortionCurve(100);
+     // fullSong.audioDistortion.oversample = "x";
 }
 
-export {audioList,pastAudioList,setupWebaudio,playCurrentSound,pauseCurrentSound,loadSoundFile,setVolume, bassBoost,trebleBoost,doCurve};
+export {audioList,fullSong,setupWebaudio,playCurrentSound,pauseCurrentSound,loadSoundFile,setVolume, bassBoost,trebleBoost,doCurve, loadBeatsAndSong};
