@@ -9,18 +9,12 @@
 <body>
 <main>
   <canvas width="800" height="400"></canvas>
-  <div id="ui-container">
-  <section id="score-info">
-    <div id="score-display">
-
-    </div>
-    <div id="combo-display">
-
-    </div>
-    <div id="multiplier-display">
-
-    </div>
-  </section>
+  <h1>Title</h1>
+  <div id="score-info">
+    <div id="score-display" class="game-display">0</div>
+    <div id="combo-display" class="game-display">0</div>
+  </div>
+  <div id="instructions">???</div>
   <div id="controls">
     <section>
       <button id="play-button" data-playing="no"></button>
@@ -28,12 +22,15 @@
 		
       <label>Track: 
         <select id="track-select">
-          <option value="Taking What's Not Yours - TV Girl" selected>Taking What's Not Yours</option>
-          <option value="Brain Stew - Green Day" >Brain Stew</option>
-          <option value="Shadow World - Shihoko Hirata" >Shadow World</option>
-          <option value="Bloom - Necry Talkie" >Bloom</option>
+          <option id="default-track"value="0" selected>Taking What's Not Yours</option>
+          <option value="1" >Brain Stew</option>
+          <option value="2" >Shadow World</option>
+          <option value="3" >Bloom</option>
         </select>
       </label>
+    </section>
+    <section>
+      <span><input type="checkbox" id="autoplay-CB"><label for="autoplay-CB">Autoplay</label></span>
     </section>
 		
     <section>
@@ -41,13 +38,12 @@
       <span id="volume-label">???</span>
     </section>
     <section>
-      <span><input type="checkbox" id="gradient-CB"><label for="gradient-CB">Show Gradient</label></span>
+      <span><input type="checkbox" id="line-CB"><label for="line-CB">Show Line</label></span>
       <span><input type="checkbox" id="bars-CB"><label for="bars-CB">Show Bars</label></span>
-      <span><input type="checkbox" id="circles-CB"><label for="circles-CB">Show Circles</label></span>
-      <!-- we'll use this 4th checkbox soon! -->
-      <span><input type="checkbox" id="noise-CB"><label for="noise-CB">Show Noise</label></span>
-      <span><input type="checkbox" id="invert-CB"><label for="invert-CB">Show Invert</label></span>
-      <span><input type="checkbox" id="emboss-CB"><label for="emboss-CB">Show Emboss</label></span>
+      <span><input type="checkbox" id="circle-CB"><label for="circle-CB">Show Circle</label></span>
+      <span><input type="checkbox" id="notes-CB"><label for="notes-CB">Show Notes</label></span>
+      <span><input type="checkbox" id="circle-bars-CB"><label for="circle-bars-CB">Show Circle's Bars</label></span>
+
       <section>
         BASS BOOSTER: <input type="range" id="bass-boost-slider" min="0" max="35" value="0" step="1">
       <span id="bass-boost-label">???</span>
@@ -55,15 +51,20 @@
         TREBLE BOOSTER: <input type="range" id="treble-boost-slider" min="0" max="35" value="0" step="1">
       <span id="treble-boost-label">???</span>
       </section>
-      <button id="wave"> Wave  </button>
 
-      <label for="type-data-select">Choose an audio data type:</label>
-      <select name="type-data-select" id="type-data-select">
+        <label for="type-data-select">Choose an audio data type:</label>
+        <select name="type-data-select" id="type-data-select">
         <option value="frequency">Frequency Data</option>
         <option value="waveform">Waveform Data</option>
       </select>
     </section>  
   </div>
+
+  <div id="controls-guide">
+    <p>s</p>
+    <p>d</p>
+    <p>j</p>
+    <p>k</p>
   </div>
 </main>
 </body>

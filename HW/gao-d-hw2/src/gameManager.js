@@ -1,9 +1,8 @@
 let score = 0;
-let combo = 1;
-let scoreMultuplier = 1;
+let combo = 0;
 
 const increaseScore = () =>{
-    score += 100 * scoreMultuplier;
+    score += 100;
     update();
 }
 
@@ -16,10 +15,8 @@ const comboIncrease = () =>{
 }
 
 const update = () => {
-    document.querySelector("#score-display").innerHTML = String(score);
-    document.querySelector("#combo-display").innerHTML = String(combo);
-    document.querySelector("#multiplier-display").innerHTML = String(scoreMultuplier);
-
+    document.querySelector("#score-display").innerHTML = `Score: ${String(score)}`;
+    document.querySelector("#combo-display").innerHTML = `Combo: ${String(combo)}`;
 }
 
 export {increaseScore, update, comboBroke, comboIncrease};

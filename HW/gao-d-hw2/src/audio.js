@@ -1,13 +1,14 @@
 let audioList = [];
 
 let drums = {};
-let vocals = {};
+let other = {};
 let bass = {};
-let guitar = {};
+let instrumental = {};
 
 let fullSong = {};
 
 let firstPass = true;
+
 
 // 3 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
@@ -20,18 +21,18 @@ const DEFAULTS = Object.freeze({
 let audioData = new Uint8Array(DEFAULTS.numSamples/2);
 
 // **Next are "public" methods - we are going to export all of these at the bottom of this file**
-const setupWebaudio = (bassPath, drumsPath, guitarPath, vocalPath, fullSongPath) =>{
+const setupWebaudio = (bassPath, drumsPath, instrumentalPath, otherPath, fullSongPath) =>{
     individualAudios(drumsPath, drums);
-    individualAudios(vocalPath, vocals);
+    individualAudios(otherPath, other);
     individualAudios(bassPath, bass);
-    individualAudios(guitarPath, guitar);
+    individualAudios(instrumentalPath, instrumental);
 
     individualAudios(fullSongPath, fullSong);
     
     audioList[0] = drums;
-    audioList[1] = vocals;
+    audioList[1] = other;
     audioList[2] = bass;
-    audioList[3] = guitar;
+    audioList[3] = instrumental;
 }
 
 const individualAudios = (audioPath, object) => {
@@ -112,8 +113,8 @@ const playCurrentSound = () => {
 const pauseCurrentSound = () => {
     for(let soundIndex in audioList){
         audioList[soundIndex].audioElement.pause();
-        fullSong.audioElement.pause();
     }
+    fullSong.audioElement.pause();
 }
 
 const setVolume = value => {
@@ -123,33 +124,28 @@ const setVolume = value => {
 }
 
 const bassBoost = value =>{
+    for(let index in audioList){
+        audioList[index].audioBiquadFilter.type = "lowshelf";
+        audioList[index].audioBiquadFilter.frequency.value = 1000;
+        audioList[index].audioBiquadFilter.gain.value = value;
+    }
+
     fullSong.audioBiquadFilter.type = "lowshelf";
-    fullSong.audioBiquadFilter.frequency.value = 1000;
+    fullSong.audioBiquadFilter.frequency.value = 2000;
     fullSong.audioBiquadFilter.gain.value = value;
+
 }
 
 const trebleBoost = value =>{
+    for(let index in audioList){
+        audioList[index].audioBiquadFilter.type = "highshelf";
+        audioList[index].audioBiquadFilter.frequency.value = 2000;
+        audioList[index].audioBiquadFilter.gain.value = value;
+    }
+
     fullSong.audioBiquadFilter.type = "highshelf";
     fullSong.audioBiquadFilter.frequency.value = 2000;
     fullSong.audioBiquadFilter.gain.value = value;
 }
 
-const doCurve = () =>{
-    function makeDistortionCurve(amount) {
-        const k = typeof amount === "number" ? amount : 50;
-        const n_samples = 44100;
-        const curve = new Float32Array(n_samples);
-        const deg = Math.PI / 180;
-      
-        for (let i = 0; i < n_samples; i++) {
-          const x = (i * 2) / n_samples - 1;
-          curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
-        }
-        return curve;
-      }
-      
-      fullSong.audioDistortion.curve = makeDistortionCurve(100);
-     // fullSong.audioDistortion.oversample = "x";
-}
-
-export {audioList,fullSong,setupWebaudio,playCurrentSound,pauseCurrentSound,loadSoundFile,setVolume, bassBoost,trebleBoost,doCurve, loadBeatsAndSong};
+export {audioList,fullSong,setupWebaudio,playCurrentSound,pauseCurrentSound,loadSoundFile,setVolume, bassBoost,trebleBoost, loadBeatsAndSong};

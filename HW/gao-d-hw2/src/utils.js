@@ -1,6 +1,8 @@
 const makeColor = (red, green, blue, alpha = 1) => {
     return `rgba(${red},${green},${blue},${alpha})`;
 };
+
+const rainbow = (rotation, alpha = 1) => `hsla(${(rotation * 180 / Math.PI) % 360}, 100%, 50%, ${alpha})`;
   
 const getRandom = (min, max) => {
     return Math.random() * (max - min) + min;
@@ -71,4 +73,4 @@ const goFullscreen = (element) => {
     // .. and do nothing if the method is not supported
 };
   
-export {makeColor, getRandomColor, getLinearGradient, goFullscreen, scoreLineHighlight, drawLine, drawArrow, drawSquare};
+export {makeColor, getRandomColor, getLinearGradient, goFullscreen, scoreLineHighlight, drawLine, drawArrow, drawSquare, rainbow};

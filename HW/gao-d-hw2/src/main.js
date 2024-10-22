@@ -6,7 +6,12 @@ import { readAppData } from './dataReader.js';
 
 export let dataType;
 export let paused = false;
+export let autoplay = false;
+
 let songSelectionData = {};
+
+let titleGone = false;
+let titleAlpha = 1;
 
 let isKeysPressed = {
   s: {
@@ -36,34 +41,30 @@ let isKeysPressed = {
 };
 
 const drawParams = {
-  showGradient : true,
+  showLine : true,
   showBars : true,
-  showCircles : true,
-  showNoise : false,
-  showInvert : false,
-  showEmboss : false
+  showCircle : true,
+  showNotes : true,
+  showCircleBars : true
 };
 
 // 1 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
 	bass  : "media/Taking What's Not Yours - TV Girl/bass.mp3",
   drums : "media/Taking What's Not Yours - TV Girl/drums.mp3",
-  guitar: "media/Taking What's Not Yours - TV Girl/instrumental.mp3",
-  vocals: "media/Taking What's Not Yours - TV Girl/other.mp3",
+  instrumental: "media/Taking What's Not Yours - TV Girl/instrumental.mp3",
+  other: "media/Taking What's Not Yours - TV Girl/other.mp3",
   fullSong: "media/Taking What's Not Yours - TV Girl/original.mp3"
 });
 
 const init = () => {
-  audio.setupWebaudio(DEFAULTS.bass,DEFAULTS.drums,DEFAULTS.guitar,DEFAULTS.vocals, DEFAULTS.fullSong);
-	let canvasElement = document.querySelector("canvas"); // hookup <canvas> element
-  // Load all app & shape data once when the page loads
-  // Define a callback function to handle the data
-const handleData = (data) => {
-  console.log('Data loaded:', data);
-  
-  songSelectionData = data;
-
-  console.log('Some property:', songSelectionData.songs);
+  audio.setupWebaudio(DEFAULTS.bass,DEFAULTS.drums,DEFAULTS.intrumental,DEFAULTS.other, DEFAULTS.fullSong);
+	let canvasElement = document.querySelector("canvas"); 
+  const handleData = (data) => {  
+    songSelectionData = data;
+    document.querySelector("h1").innerHTML = songSelectionData.title;
+    document.querySelector("#instructions").innerHTML = songSelectionData.instructions;
+    document.querySelector('title').textContent = songSelectionData.title;
 };
 
 // Call `readAppData` and pass the callback function
@@ -103,6 +104,10 @@ const setupUI = canvasElement =>{
         e.target.dataset.playing = "no";// our CSS will set the text to "Play"
         paused = true;
     }
+
+    if(!titleGone){
+      ridTitle();
+    }
   };
 
   // C - hookup volume slider and label
@@ -122,13 +127,16 @@ const setupUI = canvasElement =>{
 
   //D - hookup track <select>
   let trackSelect = document.querySelector("#track-select");
+
+  document.querySelector("#default-track").selected = true;
+
   //add .onchange event to <select>
   trackSelect.onchange = e => {
-    audio.loadBeatsAndSong(e.target.value);
+    audio.loadBeatsAndSong(songSelectionData.songs[e.target.value]);
+    canvas.clearAll();
     //pause the current track if it is playing
     if(playButton.dataset.playing == "yes"){
         playButton.dispatchEvent(new MouseEvent("click"));
-        canvas.clearAll();
     }
   };
 
@@ -136,39 +144,44 @@ const setupUI = canvasElement =>{
   dataType = dataTypeSelect.value = "frequency";
   dataTypeSelect.onchange = () =>{
     dataType = dataTypeSelect.value;
+    if(!titleGone){
+      ridTitle();
+    }
   }
 
-  const gradiantCheckBox = document.querySelector("#gradient-CB");
+  const lineCheckBox = document.querySelector("#line-CB");
   const barsCheckBox = document.querySelector("#bars-CB");
-  const circlesCheckBox = document.querySelector("#circles-CB");
-  const noiseCheckBox = document.querySelector("#noise-CB");
-  const invertCheckBox = document.querySelector("#invert-CB");
-  const embossCheckBox = document.querySelector("#emboss-CB");
+  const circleCheckBox = document.querySelector("#circle-CB");
+  const notesCheckBox = document.querySelector("#notes-CB");
+  const circleBarsCheckBox = document.querySelector("#circle-bars-CB");
 
-  gradiantCheckBox.checked = drawParams.showGradient;
+  const autoplayCheckBox = document.querySelector("#autoplay-CB");
+
+  lineCheckBox.checked = drawParams.showLine;
   barsCheckBox.checked = drawParams.showBars;
-  circlesCheckBox.checked = drawParams.showCircles;
-  noiseCheckBox.checked = drawParams.showNoise;
-  invertCheckBox.checked = drawParams.showInvert;
-  embossCheckBox.checked = drawParams.showEmboss;
+  circleCheckBox.checked = drawParams.showCircle;
+  notesCheckBox.checked = drawParams.showNotes;
+  circleBarsCheckBox.checked = drawParams.showCircleBars;
+  autoplayCheckBox.checked = autoplay;
 
-  gradiantCheckBox.onchange = () =>{
-    drawParams.showGradient = gradiantCheckBox.checked;
+  lineCheckBox.onchange = () =>{
+    drawParams.showLine = lineCheckBox.checked;
   }
   barsCheckBox.onchange = () =>{
     drawParams.showBars = barsCheckBox.checked;
   }
-  circlesCheckBox.onchange = () =>{
-    drawParams.showCircles = circlesCheckBox.checked;
+  circleCheckBox.onchange = () =>{
+    drawParams.showCircle = circleCheckBox.checked;
   }
-  noiseCheckBox.onchange = () =>{
-    drawParams.showNoise = noiseCheckBox.checked;
+  notesCheckBox.onchange = () =>{
+    drawParams.showNotes = notesCheckBox.checked;
   }
-  invertCheckBox.onchange = () =>{
-    drawParams.showInvert = invertCheckBox.checked;
+  circleBarsCheckBox.onchange = () =>{
+    drawParams.showCircleBars = circleBarsCheckBox.checked;
   }
-  embossCheckBox.onchange = () =>{
-    drawParams.showEmboss = embossCheckBox.checked;
+
+  autoplayCheckBox.onchange = () =>{
+    autoplay = autoplayCheckBox.checked;
   }
 
   let boostSlider = document.querySelector("#bass-boost-slider");
@@ -197,11 +210,6 @@ const setupUI = canvasElement =>{
   //set value of label to match innitial value of slider
   trebleSlider.dispatchEvent(new Event("input"));
 
-  document.querySelector("#wave").onclick = () =>{
-    audio.doCurve();
-  }
-
-
   document.addEventListener('keydown', function(e){
     if(e.key == 's' || e.key == 'd' || e.key == 'j' || e.key == 'k')
     {
@@ -211,7 +219,7 @@ const setupUI = canvasElement =>{
         isKeysPressed[e.key].released = false;
         setTimeout(() => {
           isKeysPressed[e.key].justPressed = false;
-        }, 100);        
+        }, 25);        
       }
     }
   })
@@ -226,11 +234,22 @@ const setupUI = canvasElement =>{
 export {init, isKeysPressed};
 
 const loop = () =>{
-  if(dataType == "frequency"){
-      setTimeout(loop, 1000/60);
+  setTimeout(loop, 1000/60);
+  if(!paused){
+    game.update();
+    canvas.draw(drawParams);
   }
+}
 
-  game.update();
-  
-  canvas.draw(drawParams);
+const ridTitle = () =>{
+  document.querySelector("h1").style.color = `rgba(255,255,255,${titleAlpha})`;
+  titleAlpha *= .9;
+  if(titleAlpha > .001){
+    setTimeout(() => {
+      ridTitle();
+    }, 1000/60);
+  }
+  else{
+    document.querySelector("h1").innerHTML = "";
+  }
 }
