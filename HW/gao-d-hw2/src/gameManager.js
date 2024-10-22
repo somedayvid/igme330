@@ -2,7 +2,7 @@ let score = 0;
 let combo = 0;
 
 const increaseScore = () =>{
-    score += 100;
+    score += 100 + combo;
     update();
 }
 

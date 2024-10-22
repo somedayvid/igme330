@@ -83,7 +83,7 @@ const setupCanvas = (canvasElement,audioList, fullSong) =>{
 	audioData[3] = instrumentalData;
 
 	for(let i = 0; i < 4; i++){
-		noteHitterOutline.push(new Arrow(ctx, canvasStartX + 65 + 125 * i , 700, Math.PI/2 * i, false));
+		noteHitterOutline.push(new Arrow(ctx, canvasStartX + 65 + 125 * i , canvasHeight - canvasHeight/6, Math.PI/2 * i, false));
 	}
 	circleCenterX = canvasWidth / 2;
 	circleCenterY = canvasHeight / 2 + 200;
@@ -266,11 +266,10 @@ const draw = (params={}) =>{
 			if(arrowsList[index][0].expired){ //means the note has been hit
 				arrowsList[index].splice(0, 1);
 			}
-			else if (arrowsList[index][0].y >= 705) {
+			else if (arrowsList[index][0].y >= canvasHeight - canvasHeight/6) {
 				//marks the note to be deleted if not hit within next couple milliseconds
 				arrowsList[index][0].noteRest(index);
 			}
-
 		}
 	}
 
@@ -364,7 +363,7 @@ class Arrow {
 class HitQualityDisplay{
 	constructor(x, hitQuality){
 		this.x = x;
-		this.y = 750;
+		this.y = canvasHeight - canvasHeight/8;
 		this.speed = 1;
 		this.expired = false;
 		this.alpha = 1;
@@ -408,7 +407,7 @@ class HitQualityDisplay{
 		ctx.restore();
 	}
 	update = () =>{
-		this.y -= this.speed;
+		this.y += this.speed;
 		this.x += this.speed;
 		this.alpha *= .9;
 	}
