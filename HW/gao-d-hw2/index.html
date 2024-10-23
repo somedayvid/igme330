@@ -9,12 +9,14 @@
 <body>
 <main>
   <canvas width="800" height="400"></canvas>
-  <h1>Title</h1>
+  <div id="text-info">
+    <h1>Title</h1>
+    <div id="instructions"></div>
+  </div>
   <div id="score-info">
     <div id="score-display" class="game-display">0</div>
     <div id="combo-display" class="game-display">0</div>
   </div>
-  <div id="instructions">???</div>
   <div id="controls">
     <section>
       <button id="play-button" data-playing="no"></button>
@@ -30,26 +32,64 @@
       </label>
     </section>
     <section>
-      <span><input type="checkbox" id="autoplay-CB"><label for="autoplay-CB">Autoplay</label></span>
+      <div class="button-and-label">
+        <label for="autoplay-CB">Autoplay</label>
+        <label class="switch">
+          <input type="checkbox" id="autoplay-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
     </section>
 		
     <section>
-      Volume: <input type="range" id="volume-slider" min="0" max="2" value="1" step="0.01">
-      <span id="volume-label">???</span>
+      <label for="volume-slider" id="volume-label">Volume: </label>
+      <input type="range" class="range-slider" id="volume-slider" min="0" max="2" value="1" step="0.01">
     </section>
-    <section>
-      <span><input type="checkbox" id="line-CB"><label for="line-CB">Show Line</label></span>
-      <span><input type="checkbox" id="bars-CB"><label for="bars-CB">Show Bars</label></span>
-      <span><input type="checkbox" id="circle-CB"><label for="circle-CB">Show Circle</label></span>
-      <span><input type="checkbox" id="notes-CB"><label for="notes-CB">Show Notes</label></span>
-      <span><input type="checkbox" id="circle-bars-CB"><label for="circle-bars-CB">Show Circle's Bars</label></span>
+    <section id="switches-section">
+      <div class="button-and-label">
+        <label for="line-CB">Show Line</label>
+        <label class="switch">
+          <input type="checkbox" id="line-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="button-and-label">
+        <label for="bars-CB">Show Bars</label>
+        <label class="switch">
+          <input type="checkbox" id="bars-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="button-and-label">
+        <label for="circle-CB">Show Circle</label>
+        <label class="switch">
+          <input type="checkbox" id="circle-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="button-and-label">
+        <label for="notes-CB">Show Notes</label>
+        <label class="switch">
+          <input type="checkbox" id="notes-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="button-and-label">
+        <label for="circle-bars-CB">Show Circle's Bars</label>
+        <label class="switch">
+          <input type="checkbox" id="circle-bars-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
 
+    <section>
       <section>
-        BASS BOOSTER: <input type="range" id="bass-boost-slider" min="0" max="35" value="0" step="1">
-      <span id="bass-boost-label">???</span>
+        <label for="bass-boost-slider" id="bass-label">Bass Booster: </label>
+        <input type="range" class="range-slider" id="bass-boost-slider" min="0" max="35" value="0" step="1">
       <section>
-        TREBLE BOOSTER: <input type="range" id="treble-boost-slider" min="0" max="35" value="0" step="1">
-      <span id="treble-boost-label">???</span>
+        <label for="treble-boost-slider" id="treble-label">Treble Booster: </label>
+        <input type="range" class="range-slider" id="treble-boost-slider" min="0" max="35" value="0" step="1">
       </section>
 
         <label for="type-data-select">Choose an audio data type:</label>

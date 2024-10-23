@@ -40,6 +40,8 @@ let isKeysPressed = {
   }
 };
 
+let textInfoBox;
+
 const drawParams = {
   showLine : true,
   showBars : true,
@@ -62,8 +64,9 @@ const init = () => {
 	let canvasElement = document.querySelector("canvas"); 
   const handleData = (data) => {  
     songSelectionData = data;
-    document.querySelector("h1").innerHTML = songSelectionData.title;
-    document.querySelector("#instructions").innerHTML = songSelectionData.instructions;
+    textInfoBox = document.querySelector("#text-info");
+    textInfoBox.firstElementChild.innerHTML = songSelectionData.title;
+    textInfoBox.lastElementChild.innerHTML = songSelectionData.instructions;
     document.querySelector('title').textContent = songSelectionData.title;
 };
 
@@ -112,14 +115,13 @@ const setupUI = canvasElement =>{
 
   // C - hookup volume slider and label
   let volumeSlider = document.querySelector("#volume-slider");
-  let volumeLabel = document.querySelector("#volume-label");
 
   //add .oninput event to slider
   volumeSlider.oninput = e => {
     //set the gain
     audio.setVolume(e.target.value);
     //update value of label to match value of slider
-    volumeLabel.innerHTML = Math.round((e.target.value/2 * 100));
+    document.querySelector("#volume-label").innerHTML = `Volume: ${Math.round((e.target.value/2 * 100))}`;
   };
 
   //set value of label to match innitial value of slider
@@ -185,27 +187,25 @@ const setupUI = canvasElement =>{
   }
 
   let boostSlider = document.querySelector("#bass-boost-slider");
-  let boostLabel = document.querySelector("#bass-boost-label");
 
   //add .oninput event to slider
   boostSlider.oninput = e => {
     //set the gain
     audio.bassBoost(e.target.value);
     //update value of label to match value of slider
-    boostLabel.innerHTML = Math.round(e.target.value);
+    document.querySelector("#bass-label").innerHTML = `Bass Boost Level: ${e.target.value}`;
   };
   //set value of label to match innitial value of slider
   boostSlider.dispatchEvent(new Event("input"));
 
   let trebleSlider = document.querySelector("#treble-boost-slider");
-  let trebleLabel = document.querySelector("#treble-boost-label");
 
   //add .oninput event to slider
   trebleSlider.oninput = e => {
     //set the gain
     audio.trebleBoost(e.target.value);
     //update value of label to match value of slider
-    trebleLabel.innerHTML = e.target.value;
+    document.querySelector("#treble-label").innerHTML = `Treble Boost Level: ${e.target.value}`;
   };
   //set value of label to match innitial value of slider
   trebleSlider.dispatchEvent(new Event("input"));
@@ -242,7 +242,7 @@ const loop = () =>{
 }
 
 const ridTitle = () =>{
-  document.querySelector("h1").style.color = `rgba(255,255,255,${titleAlpha})`;
+  textInfoBox.style.color = `rgba(255,255,255,${titleAlpha})`;
   titleAlpha *= .9;
   if(titleAlpha > .001){
     setTimeout(() => {
@@ -250,6 +250,7 @@ const ridTitle = () =>{
     }, 1000/60);
   }
   else{
-    document.querySelector("h1").innerHTML = "";
+    textInfoBox.firstElementChild.innerHTML = "";
+    textInfoBox.lastElementChild.innerHTML = "";
   }
 }
