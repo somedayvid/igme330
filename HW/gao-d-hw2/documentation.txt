@@ -36,5 +36,6 @@ V. Tell us how you improved the aesthetics of the app over the AV HW:
     requirements for a decent grade since I spent most of my enthusiasm and energy on the rhythm part as 
     that was the most interesting to me. I think it looks fine and I didn't really have a theme going on
     so it is just rainbow. I do think the rotating bars with the circle is pretty cool though. I'd give
-    myself a ~10% maybe 9% on this part for like an average of 12% maybe.
+    myself a ~10% maybe 9% on this part for like an average of 12% maybe. Other than that I just cleaned
+    all the inputs and sliders up.
 
