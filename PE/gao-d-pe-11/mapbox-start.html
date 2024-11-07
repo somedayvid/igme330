@@ -9,11 +9,15 @@
 <body>
 <div id='map' style='width: 400px; height: 300px;'></div>
 <script>
-  mapboxgl.accessToken = 'ACCESS-TOKEN-GOES-HERE-GO-GET-YOUR-OWN!';
+  mapboxgl.accessToken = 'pk.eyJ1IjoiZGF5dmlkMyIsImEiOiJjbTM1anU1ejUwYjJhMmpwdGhnenlnN2xwIn0.O8Yb4Q-H3-3xGEDJlW0lnw';
   var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v11'
+    style: 'mapbox://styles/mapbox/light-v10'
   });
+  map.setZoom(9);
+  map.setCenter([-77.6799,43.083848]); // note the order - it's longitude,latitude - which is opposite of Google Maps
+    // Add zoom and rotation controls to the map.
+    map.addControl(new mapboxgl.NavigationControl());
 </script>
 </body>
 </html>
