@@ -1,0 +1,169 @@
+/* *{
+  overflow: hidden;
+}
+
+body {
+  background: #eeeeee;
+  font-family: tahoma, verdana, sans serif;
+}
+
+#text-info{
+  position: absolute;
+  left: 36%;
+  top: 45%;
+  color:white;
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+}
+
+h1{
+  font-size: 5rem;
+  margin-bottom: 1rem;
+}
+
+canvas {
+  margin-top: -8px;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+  background: #fafafa;
+  position: absolute;
+  top:0;
+  left:0;
+}
+#score-info{
+  position: absolute;
+  bottom: 0;
+  width: 33%;
+  height: 7%;
+  font-size: 20px;
+  color:pink; 
+  display: flex;
+  justify-content: space-evenly;
+}
+.game-display{
+  width: 50%;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  color:black;
+}
+
+#controls{
+  color: white;
+  position: absolute;
+  height: auto;
+  right:2%;
+  top:52%;
+  width: 27%;
+}
+#controls-guide{
+  position: absolute;
+  bottom:14%;
+  width: 33%;
+  left:30px;
+  font-size: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+#controls-guide > p{
+  margin: 0 11%;
+}
+
+#volumeLabel{
+  margin-left: 1rem;
+}
+
+section{
+  margin-bottom: 1rem;
+}
+
+#playButton{
+  font-size: 1.2rem;
+  width: 6rem;
+}
+
+button{
+  background-color: #ccc; 
+  border: none;
+  color: black;
+  cursor: pointer;
+  padding: 5px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 34px;
+}
+
+button:hover{
+  background-color: #fff;
+} */
+
+button[data-playing="yes"]:after{
+  content: "Pause";
+}
+
+button[data-playing="no"]:after{
+  content: "Play";
+}
+
+/* #fsButton{
+  font-size: 1.2rem;
+  width: 8rem;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  height: 34px;
+}
+
+Hide default HTML checkbox 
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 34px;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+.button-and-label{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.button-label > label{
+  transform: translateY(3100px);
+}
+
+#switches-section{
+  display: flex;
+  flex-direction: row;
+}
+
+.range-slider {
+  width: 100%;
+  height: 15px;
+  border-radius: 5px;  
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity .2s;
+} */

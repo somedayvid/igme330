@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Audio Visualizer</title>
+  <link href="styles/default-styles.css" type="text/css" rel="stylesheet" />
+  <!-- <script src="src/loader.js" type="module"></script> -->
+   <!-- <script type="module" src="src/main.js"></script> -->
+</head>
+<body>
+<main>
+  <canvas width="800" height="400"></canvas>
+  <div id="text-info">
+    <h1>Title</h1>
+    <div id="instructions"></div>
+  </div>
+  <div id="score-info">
+    <div id="score-display" class="game-display">0</div>
+    <div id="combo-display" class="game-display">0</div>
+  </div>
+  <div id="controls">
+    <section>
+      <button id="play-button" data-playing="no"></button>
+      <button id="fs-button">Full Screen</button>
+		
+      <label>Track: 
+        <select id="track-select">
+          <option id="default-track"value="0" selected>Taking What's Not Yours</option>
+          <option value="1" >Brain Stew</option>
+          <option value="2" >Shadow World</option>
+          <option value="3" >Bloom</option>
+        </select>
+      </label>
+    </section>
+    <section>
+      <div class="button-and-label">
+        <label for="autoplay-CB">Autoplay</label>
+        <label class="switch">
+          <input type="checkbox" id="autoplay-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+		
+    <section>
+      <label for="volume-slider" id="volume-label">Volume: </label>
+      <input type="range" class="range-slider" id="volume-slider" min="0" max="2" value=".2" step="0.01">
+    </section>
+    <section id="switches-section">
+      <div class="button-and-label">
+        <label for="line-CB">Show Line</label>
+        <label class="switch">
+          <input type="checkbox" id="line-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="button-and-label">
+        <label for="bars-CB">Show Bars</label>
+        <label class="switch">
+          <input type="checkbox" id="bars-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="button-and-label">
+        <label for="circle-CB">Show Circle</label>
+        <label class="switch">
+          <input type="checkbox" id="circle-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="button-and-label">
+        <label for="notes-CB">Show Notes</label>
+        <label class="switch">
+          <input type="checkbox" id="notes-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="button-and-label">
+        <label for="circle-bars-CB">Show Circle's Bars</label>
+        <label class="switch">
+          <input type="checkbox" id="circle-bars-CB">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <section>
+      <section>
+        <label for="bass-boost-slider" id="bass-label">Bass Booster: </label>
+        <input type="range" class="range-slider" id="bass-boost-slider" min="0" max="35" value="0" step="1">
+      <section>
+        <label for="treble-boost-slider" id="treble-label">Treble Booster: </label>
+        <input type="range" class="range-slider" id="treble-boost-slider" min="0" max="35" value="0" step="1">
+      </section>
+
+        <label for="type-data-select">Choose an audio data type:</label>
+        <select name="type-data-select" id="type-data-select">
+        <option value="frequency">Frequency Data</option>
+        <option value="waveform">Waveform Data</option>
+      </select>
+    </section>  
+  </div>
+
+  <div id="controls-guide">
+    <p>s</p>
+    <p>d</p>
+    <p>j</p>
+    <p>k</p>
+  </div>
+</main>
+<script src="dist/bundle.js"></script>
+
+</body>
+</html>

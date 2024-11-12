@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Audio Visualizer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  <link href="styles/default-styles.css" type="text/css" rel="stylesheet">
+  <script src="src/loader.js" type="module"></script>
+</head>
+<body>
+<main>
+<canvas width="800" height="400"></canvas>
+<div class="is-overlay">
+  <nav class="navbar has-shadow is-white">
+    <!--logo/brand-->
+    <div class="navbar-brand">
+        <a class="navbar-item">
+          <i class="fas fa-music"></i>
+        </a>
+        <div class="navbar-end">
+          <a class="navbar-burger" id="burger">
+            <span></span>
+            <span></span>
+            <span></span>
+          </a>
+        </div>
+    </div>
+
+    <div class="navbar-menu" id="nav-links">
+      <div class="navbar-start">
+        <a class="navbar-item if-hoverable" href="about.html">About</a>
+        <a class="navbar-item if-hoverable" href="index.html">App</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="columns mt-6">
+  
+  </div>
+  <div class="columns mt-6">
+  
+  </div>
+  <div class="columns mt-6">
+  
+  </div>
+  <div class="columns mt-6">
+  
+  </div>
+  <div class="columns mt-6">
+  
+  </div>
+  <div class="columns mt-6">
+  
+  </div>
+  <div class="columns mt-6">
+  
+  </div>
+  <div class="columns mt-6">
+  
+  </div>
+
+  <div class="columns ml-6">
+    
+    <div class="column">
+      <div class="is-flex" id="controls-guide">
+        <p class="m-6">s</p>
+        <p class="m-6">d</p>
+        <p class="m-6">j</p>
+        <p class="m-6">k</p>
+      </div>
+      <div class="is-flex is-flex-direction-row" id="score-info">
+        <div id="score-display">0</div>
+        <div id="combo-display">0</div>
+      </div>
+    </div>
+
+    <div class="is-flex-direction-column column"id="text-info" >
+      <h1 class="is-size-1">Title</h1>
+      <div id="instructions"></div>
+    </div>
+    
+    <div class="column" id="controls">
+      <section>
+        <button class="button is-rounded" id="play-button" data-playing="no"></button>
+        <button class="button is-rounded" id="fs-button">Full Screen</button>
+      
+        <label class="label">Track: 
+          <div class="select is-info">
+            <select id="track-select">
+              <option id="default-track" value="0" selected>Taking What's Not Yours</option>
+              <option value="1" >Brain Stew</option>
+              <option value="2" >Shadow World</option>
+              <option value="3" >Bloom</option>
+            </select>
+          </div>
+        </label>
+      </section>
+
+      <section>
+        <div>
+          <label for="autoplay-CB">Autoplay</label>
+          <label >
+            <input type="checkbox" id="autoplay-CB">
+          </label>
+        </div>
+      </section>
+      
+      <section>
+        <label for="volume-slider" id="volume-label">Volume: </label>
+        <input type="range" id="volume-slider" min="0" max="2" value="1" step="0.01">
+      </section>
+
+      <section id="switches-section">
+        <div>
+          <label for="line-CB">Show Line</label>
+          <input type="checkbox" id="line-CB">
+        </div>
+        <div>
+          <label for="bars-CB">Show Bars</label>
+          <input type="checkbox" id="bars-CB">
+        </div>
+        <div>
+          <label for="circle-CB">Show Circle</label>
+          <input type="checkbox" id="circle-CB">
+        </div>
+        <div>
+          <label for="notes-CB">Show Notes</label>
+          <input type="checkbox" id="notes-CB">
+        </div>
+        <div>
+          <label for="circle-bars-CB">Show Circle's Bars</label>
+          <input type="checkbox" id="circle-bars-CB">
+        </div>
+      </section>
+
+      <section>
+        <section>
+          <label for="bass-boost-slider" id="bass-label">Bass Booster: </label>
+          <input type="range" id="bass-boost-slider" min="0" max="35" value="0" step="1">
+        </section>
+        <section>
+          <label for="treble-boost-slider" id="treble-label">Treble Booster: </label>
+          <input type="range" id="treble-boost-slider" min="0" max="35" value="0" step="1">
+        </section>
+
+          <label for="type-data-select">Choose an audio data type:</label>
+          <select name="type-data-select" id="type-data-select">
+            <option value="frequency">Frequency Data</option>
+            <option value="waveform">Waveform Data</option>
+          </select>
+      </section>  
+    </div>
+
+
+    
+  </div>
+</div>
+</main>
+</body>
+</html>
