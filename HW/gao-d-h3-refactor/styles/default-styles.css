@@ -1,169 +1,173 @@
-/* *{
-  overflow: hidden;
+/* font-family: 'Comfortaa', sans-serif;
+font-family: 'M PLUS 1p', sans-serif; */
+/* gets rid of some annoying html defaults and makes sure that the html fits onto the page correctly */
+html{
+    /* position: relative;
+    min-height: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0; */
+    scroll-behavior: smooth;
 }
 
-body {
-  background: #eeeeee;
-  font-family: tahoma, verdana, sans serif;
+/* sets the basic background design of the body and allows the text color to be inherited and everything to be correctly aligned. */
+body{
+    /* background-color: white;
+    display: flex;
+    flex-flow: column nowrap;
+    position: relative;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    color: #312F2F; */
+    font-family: 'M PLUS 1p', 'Times New Roman', Times, serif;
 }
 
-#text-info{
-  position: absolute;
-  left: 36%;
-  top: 45%;
-  color:white;
-  width: 33%;
-  display: flex;
-  flex-direction: column;
-}
-
-h1{
-  font-size: 5rem;
-  margin-bottom: 1rem;
-}
-
-canvas {
-  margin-top: -8px;
-  box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
-  background: #fafafa;
-  position: absolute;
-  top:0;
-  left:0;
-}
-#score-info{
-  position: absolute;
-  bottom: 0;
-  width: 33%;
-  height: 7%;
-  font-size: 20px;
-  color:pink; 
-  display: flex;
-  justify-content: space-evenly;
-}
-.game-display{
-  width: 50%;
-  justify-content: center;
-  text-align: center;
-  vertical-align: middle;
-  color:black;
-}
-
-#controls{
-  color: white;
-  position: absolute;
-  height: auto;
-  right:2%;
-  top:52%;
-  width: 27%;
-}
-#controls-guide{
-  position: absolute;
-  bottom:14%;
-  width: 33%;
-  left:30px;
-  font-size: 30px;
-  display: flex;
-  justify-content: space-between;
-}
-#controls-guide > p{
-  margin: 0 11%;
-}
-
-#volumeLabel{
-  margin-left: 1rem;
-}
-
-section{
-  margin-bottom: 1rem;
-}
-
-#playButton{
-  font-size: 1.2rem;
-  width: 6rem;
-}
-
-button{
-  background-color: #ccc; 
-  border: none;
-  color: black;
-  cursor: pointer;
-  padding: 5px 15px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 34px;
-}
-
-button:hover{
-  background-color: #fff;
+/* makes header into a link that triggers something in the js to return to a neutral state with user input still saved*/
+/* h1{
+    padding-top: 25px;
+    font-size: 5vw;
+    cursor: pointer;
 } */
 
-button[data-playing="yes"]:after{
-  content: "Pause";
+h1, h2{
+    font-family: 'Comfortaa', 'Times New Roman', Times, serif;
+    /* margin: 35px 0 0 0; */
 }
 
-button[data-playing="no"]:after{
-  content: "Play";
+/* div#main-content{
+    display: flex;
+    flex-flow: column nowrap;
+    width: 40vw;
+    justify-content: center;
+} */
+/* 
+select{
+    border-radius: 10px;
 }
 
-/* #fsButton{
-  font-size: 1.2rem;
-  width: 8rem;
+div.item{
+    margin-top: 1vw;
+} */
+
+/* for some reason doesn't inherit so apply the elements directly */
+label, select, button#search, input{
+    font-family: 'M PLUS 1p';
+    /* font-weight: 500; */
+}
+/* 
+input{
+    text-align: center;
+} */
+
+/* limits the space that the displayed results have to take up and makes it a flex box so the 
+responsiveness it easy to work with*/
+/* div#display{
+    display: flex;
+    flex-flow: row wrap;
+    width: 65vw;
+    justify-content: center;
 }
 
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-  height: 34px;
+div.result {
+    border: 1px solid rgba(31, 47, 47, .4);
+    border-radius: 10px;
+    margin: 1vw 10px;
+    padding: 10px;
+    background-color:  #F9F1F2;
+    width: 20%;
+    font-weight: 700;
+} */
+
+/* div#extra-info{
+    margin: 0 20vw;
+    text-align: left;
+} */
+
+/* footer{
+    background-color: #D7263D;
+    width: 100vw;
+    font-weight: 1000;
+    color:#F9F0F1;
+    position: relative;
+    bottom: 0;
+    height: 70px;
+    padding-top: 35px;
+    overflow: hidden;
+    margin-top: 90px;
 }
 
-Hide default HTML checkbox 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+footer a:link{
+    color: #F9F0F1; 
 }
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 34px;
+footer a:visited{
+    color: #F9F0F1;
 }
 
-input:checked + .slider {
-  background-color: #2196F3;
+select:hover{
+    background-color: #F5F3F7;
 }
 
-.button-and-label{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
+/* link color changes */
+/* a:link{
+    color: #560319;
 }
 
-.button-label > label{
-  transform: translateY(3100px);
+a:visited{
+    color: #312F2F;
 }
 
-#switches-section{
-  display: flex;
-  flex-direction: row;
+a:focus{
+    color: #704241;
 }
 
-.range-slider {
-  width: 100%;
-  height: 15px;
-  border-radius: 5px;  
-  background: #d3d3d3;
-  outline: none;
-  opacity: 0.7;
-  transition: opacity .2s;
+a:hover{
+    color: #D7263D;
+}
+
+a:active{
+    color: #D7263D;
+} */
+
+/* #travel{
+    border: 1px solid black;
+    width: 50px;
+    height: 25px;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    justify-content: center;
+    z-index: 100;
+    background-color: #312F2F;
+    color: white;
+    font-family: 'M PLUS 1p', sans-serif;
+    border-radius: 2px;
+} */ 
+
+/* changes some margings and paddings to account for smaller screen widths */
+/* @media screen and (max-width: 780px){
+    div#mainContent{
+        width: 80vw;
+    }
+    div#extraInfo{
+        margin: 0 10vw;
+    }
+    footer{
+        padding-bottom: 20px;
+        padding-top: 20px;
+    }
+    div#display{
+        width: 100vw;
+    }
+
+    div.result{
+        width: 30%;
+    }
+
+    #travel{
+        right: 5px;
+    }
 } */

@@ -1,160 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Audio Visualizer</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-  <link href="styles/default-styles.css" type="text/css" rel="stylesheet">
-  <script src="src/loader.js" type="module"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WaniKani Japanese Dictionary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa&family=M+PLUS+1p:wght@400&family=Raleway:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="styles/default-styles.css">
+    <script src="src/main.js" type="module"></script>
 </head>
-<body>
-<main>
-<canvas width="800" height="400"></canvas>
-<div class="is-overlay">
-  <nav class="navbar has-shadow is-white">
-    <!--logo/brand-->
-    <div class="navbar-brand">
-        <a class="navbar-item">
-          <i class="fas fa-music"></i>
-        </a>
-        <div class="navbar-end">
-          <a class="navbar-burger" id="burger">
-            <span></span>
-            <span></span>
-            <span></span>
-          </a>
+<body class="has-background-warning-light is-size-5">
+    <nav class="navbar has-shadow is-white">
+        <!--logo/brand-->
+        <div class="navbar-brand">
+            <a class="navbar-item" href="about.html">
+                <i class="fas fa-language"></i>
+            </a>
+            <a class="navbar-burger" id="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </a>
         </div>
-    </div>
-
-    <div class="navbar-menu" id="nav-links">
-      <div class="navbar-start">
-        <a class="navbar-item if-hoverable" href="about.html">About</a>
-        <a class="navbar-item if-hoverable" href="index.html">App</a>
-      </div>
-    </div>
-  </nav>
-
-  <div class="columns mt-6">
-  
-  </div>
-  <div class="columns mt-6">
-  
-  </div>
-  <div class="columns mt-6">
-  
-  </div>
-  <div class="columns mt-6">
-  
-  </div>
-  <div class="columns mt-6">
-  
-  </div>
-  <div class="columns mt-6">
-  
-  </div>
-  <div class="columns mt-6">
-  
-  </div>
-  <div class="columns mt-6">
-  
-  </div>
-
-  <div class="columns ml-6">
     
-    <div class="column">
-      <div class="is-flex" id="controls-guide">
-        <p class="m-6">s</p>
-        <p class="m-6">d</p>
-        <p class="m-6">j</p>
-        <p class="m-6">k</p>
-      </div>
-      <div class="is-flex is-flex-direction-row" id="score-info">
-        <div id="score-display">0</div>
-        <div id="combo-display">0</div>
-      </div>
+        <div class="navbar-menu" id="nav-links">
+            <a class="navbar-item is-hoverable" href="about.html">About</a>
+            <a class="navbar-item">App</a>
+            <a class="navbar-item is-hoverable" href="docs.html">Documentation</a>
+        </div> 
+    </nav>
+
+    <div>
+        <h1 class="title is-size-1 is has-text-centered mt-6 is-clickable has-text-weight-bold" id="title">WaniKani Japanese Dictionary</h1>
+
+        <div class="container is-max-desktop">
+            <div class="has-text-centered" id="main-content">
+                <div class="select">
+                    <!-- <label for="searchby">Search Using:</label> -->
+                    <select name="search-by" id="search-by">
+                        <option value="" disabled selected>Search By</option>
+                        <option value="def">Definition</option>
+                        <option value="level">Level</option>
+                    </select>
+                </div>
+                <div class="select">  
+                    <select name="type" id="type">
+                        <option value="" disabled selected>Choose a type</option>
+                        <option value="radical">Radicals</option>
+                        <option value="kanji">Kanji</option>
+                        <option value="vocabulary">Vocabulary</option>
+                    </select>
+                </div>
+
+                <div class="m-2">
+                    <input class="input is-normal has-text-centered" id="search-term" type="text" size="20" placeholder="Enter your search term">
+                    <button class="button mt-2" type="button" id="search">Search</button>
+                </div>
+                <div id="num-results"></div>
+            </div>
+
+            <div class="container is-flex is-justify-content-space-around is-flex-wrap-wrap" id="display"></div>
+            <div class="section" id="extra-info"></div>
+        </div>
+
+        <footer class="has-background-danger has-text-centered mt-3 has-text-white section">
+            David Gao | This page utilizes the 
+            <a class="has-text-white is-underlined" href="https://docs.api.wanikani.com/20170710/#introduction" target="_blank" rel="noopener">WaniKani API</a>.
+            All API data belongs to Copyright &copy; Tofugu LLC and the WaniKani team. | <a class="has-text-white is-underlined" href="docs.html">Project Documentation</a>
+            <p>
+                <a class="has-text-white is-underlined" href="#title">RETURN TO TOP</a>
+            </p>
+        </footer>
     </div>
-
-    <div class="is-flex-direction-column column"id="text-info" >
-      <h1 class="is-size-1">Title</h1>
-      <div id="instructions"></div>
-    </div>
-    
-    <div class="column" id="controls">
-      <section>
-        <button class="button is-rounded" id="play-button" data-playing="no"></button>
-        <button class="button is-rounded" id="fs-button">Full Screen</button>
-      
-        <label class="label">Track: 
-          <div class="select is-info">
-            <select id="track-select">
-              <option id="default-track" value="0" selected>Taking What's Not Yours</option>
-              <option value="1" >Brain Stew</option>
-              <option value="2" >Shadow World</option>
-              <option value="3" >Bloom</option>
-            </select>
-          </div>
-        </label>
-      </section>
-
-      <section>
-        <div>
-          <label for="autoplay-CB">Autoplay</label>
-          <label >
-            <input type="checkbox" id="autoplay-CB">
-          </label>
-        </div>
-      </section>
-      
-      <section>
-        <label for="volume-slider" id="volume-label">Volume: </label>
-        <input type="range" id="volume-slider" min="0" max="2" value="1" step="0.01">
-      </section>
-
-      <section id="switches-section">
-        <div>
-          <label for="line-CB">Show Line</label>
-          <input type="checkbox" id="line-CB">
-        </div>
-        <div>
-          <label for="bars-CB">Show Bars</label>
-          <input type="checkbox" id="bars-CB">
-        </div>
-        <div>
-          <label for="circle-CB">Show Circle</label>
-          <input type="checkbox" id="circle-CB">
-        </div>
-        <div>
-          <label for="notes-CB">Show Notes</label>
-          <input type="checkbox" id="notes-CB">
-        </div>
-        <div>
-          <label for="circle-bars-CB">Show Circle's Bars</label>
-          <input type="checkbox" id="circle-bars-CB">
-        </div>
-      </section>
-
-      <section>
-        <section>
-          <label for="bass-boost-slider" id="bass-label">Bass Booster: </label>
-          <input type="range" id="bass-boost-slider" min="0" max="35" value="0" step="1">
-        </section>
-        <section>
-          <label for="treble-boost-slider" id="treble-label">Treble Booster: </label>
-          <input type="range" id="treble-boost-slider" min="0" max="35" value="0" step="1">
-        </section>
-
-          <label for="type-data-select">Choose an audio data type:</label>
-          <select name="type-data-select" id="type-data-select">
-            <option value="frequency">Frequency Data</option>
-            <option value="waveform">Waveform Data</option>
-          </select>
-      </section>  
-    </div>
-
-
-    
-  </div>
-</div>
-</main>
+    <script src="src/hamburger.js"></script>
 </body>
 </html>

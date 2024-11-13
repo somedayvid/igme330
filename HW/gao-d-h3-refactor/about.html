@@ -3,55 +3,50 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dance Dance Dancedance</title>
+  <title>WaniKani Japanese Dictionary</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa&family=M+PLUS+1p:wght@400&family=Raleway:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iBBXm8fW90+nuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="styles/default-styles.css">
 </head>
 <body>
-
   <nav class="navbar has-shadow is-white">
     <!--logo/brand-->
     <div class="navbar-brand">
-        <a class="navbar-item">
-          <i class="fas fa-music"></i>
-        </a>
-        <div class="navbar-end">
-          <a class="navbar-burger" id="burger">
-            <span></span>
-            <span></span>
-            <span></span>
-          </a>
-        </div>
+      <a class="navbar-item" href="about.html">
+        <i class="fas fa-language"></i>
+      </a>
+      <a class="navbar-burger" id="burger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </a>
     </div>
 
     <div class="navbar-menu" id="nav-links">
-      <div class="navbar-start">
-        <a class="navbar-item if-hoverable" href="about.html">About</a>
-        <a class="navbar-item if-hoverable" href="index.html">App</a>
-      </div>
-    </div>
+      <a class="navbar-item">About</a>
+      <a class="navbar-item is-hoverable" href="index.html">App</a>
+      <a class="navbar-item is-hoverable" href="docs.html">Documentation</a>
+    </div> 
   </nav>
 
-  <!-- Product info-->
-  <section class="section has-background-primary">
+  <section class="section has-background-warning-light is-fullheight">
     <div class="container">
-      <div class="column">  
-        <div class="hero is-large is-info p-2">
+        <div class="hero is-large is-danger p-2">
           <div class="hero-head">
-            <p class="title">
-              Dance Dance Dancedance
-            </p>
-            <p class="subtitle">
-              Play a really hard rhythm game!
-            </p>
-            <img class="p-3" style="float:right;width:50%" src="https://img.gg.deals/c2/bd/760d0adf0e6e6805228e507f0ddf3abe5bf9_1920xt1080.jpg" alt="dog">
+            <p class="title">WaniKani API Japanese Dictionary</p>
+            <p class="subtitle">Search WaniKani's extensive dictionary of Japanese words by either the level it is categorized on their website, or by definition.</p>
+            <div class="container is-flex is-flex-direction-column is-justify-content-center is-align-items-center">
+              <img style="float:right;width:50%" src="https://global.discourse-cdn.com/wanikanicommunity/original/4X/e/b/8/eb878296744a790e5348df5245f23fc9211a98fc.jpeg" alt="Wanikani's crabigator mascot fighting a colossal squid.">
+              <p class="has-text-centered">WaniKani's crabigator mascot fighting off a colossal squid. Created by Michelle Kondrich for WaniKani.com</p>
+            </div>
           </div>
           <div class="hero-footer">Contact: dg8516@rit.edu</div>
-        </div>
       </div>
     </div>
   </section>
-  
   
   <script src="src/hamburger.js"></script>
 </body>
