@@ -1,5 +1,6 @@
 import * as map from "./map.js";
 import * as ajax from "./ajax.js";
+import * as fb from "./firebase.js";
 
 // I. Variables & constants
 // NB - it's easy to get [longitude,latitude] coordinates with this tool: http://geojson.io/
@@ -45,6 +46,7 @@ const setupUI = () => {
 		}
 		refreshFavorites();
 		refreshFavoritesButton();
+		fb.addFavoriteData(favoriteIds);
 	})
 	checkLocalStorage();
 }
@@ -57,6 +59,7 @@ const init = () => {
 		map.addMarkersToMap(geojson, showFeatureDetails);
 		setupUI();
 	});
+	fb.init();
 };
 
 const showFeatureDetails = id => {

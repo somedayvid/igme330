@@ -51,12 +51,7 @@ const addMarker = (feature, className, clickHandler) =>{
 	<b>${feature.properties.title}</b>
 	<p>${feature.properties.address}</p>
 	<p>Phone: ${feature.properties.phone}</p>
-	<a id="add-favorites" class="panel-block">
-		<span class="panel-icon">
-			<i class="fas fa-star"></i>
-		</span>
-		Add To Favorites
-	</a>`;
+	`;
 
 	const marker = new mapboxgl.Marker(el)
 		.setLngLat(feature.geometry.coordinates)
