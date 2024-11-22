@@ -1,0 +1,25 @@
+h1, h2,h3, p, ul{
+    width: 70vw;
+    margin-left: 15vw;
+    margin-right: 15vw;
+    font-family: 'Comfortaa';
+}
+
+p,a, li{
+    font-family: 'M PLUS 1p';
+    font-weight: 600;
+}
+
+a{
+    position: sticky;
+    display: block;
+    top: 10px;
+    left: 10px;
+    width: 15vw;
+    font-size: 2vw;
+}
+
+a:link{
+    text-decoration: none;
+}
+

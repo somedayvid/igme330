@@ -1,0 +1,173 @@
+/* font-family: 'Comfortaa', sans-serif;
+font-family: 'M PLUS 1p', sans-serif; */
+/* gets rid of some annoying html defaults and makes sure that the html fits onto the page correctly */
+html{
+    position: relative;
+    min-height: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    scroll-behavior: smooth;
+}
+
+/* sets the basic background design of the body and allows the text color to be inherited and everything to be correctly aligned. */
+body{
+    background-color: white;
+    display: flex;
+    flex-flow: column nowrap;
+    position: relative;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    color: #312F2F;
+    font-family: 'M PLUS 1p', 'Times New Roman', Times, serif;
+}
+
+/* makes header into a link that triggers something in the js to return to a neutral state with user input still saved*/
+h1{
+    padding-top: 25px;
+    font-size: 5vw;
+    cursor: pointer;
+}
+
+h1, h2{
+    font-family: 'Comfortaa', 'Times New Roman', Times, serif;
+    margin: 35px 0 0 0;
+}
+
+div#mainContent{
+    display: flex;
+    flex-flow: column nowrap;
+    width: 40vw;
+    justify-content: center;
+}
+
+select{
+    border-radius: 10px;
+}
+
+div.item{
+    margin-top: 1vw;
+}
+
+/* for some reason doesn't inherit so apply the elements directly */
+label, select, button#search, input{
+    font-family: 'M PLUS 1p';
+    font-weight: 500;
+}
+
+input{
+    text-align: center;
+}
+
+/* limits the space that the displayed results have to take up and makes it a flex box so the 
+responsiveness it easy to work with*/
+div#display{
+    display: flex;
+    flex-flow: row wrap;
+    width: 65vw;
+    justify-content: center;
+}
+
+div.result {
+    border: 1px solid rgba(31, 47, 47, .4);
+    border-radius: 10px;
+    margin: 1vw 10px;
+    padding: 10px;
+    background-color:  #F9F1F2;
+    width: 20%;
+    font-weight: 700;
+}
+
+div#extraInfo{
+    margin: 0 20vw;
+    text-align: left;
+}
+
+footer{
+    background-color: #D7263D;
+    width: 100vw;
+    font-weight: 1000;
+    color:#F9F0F1;
+    position: relative;
+    bottom: 0;
+    height: 70px;
+    padding-top: 35px;
+    overflow: hidden;
+    margin-top: 90px;
+}
+
+footer a:link{
+    color: #F9F0F1; 
+}
+
+footer a:visited{
+    color: #F9F0F1;
+}
+
+select:hover{
+    background-color: #F5F3F7;
+}
+
+/* link color changes */
+a:link{
+    color: #560319;
+}
+
+a:visited{
+    color: #312F2F;
+}
+
+a:focus{
+    color: #704241;
+}
+
+a:hover{
+    color: #D7263D;
+}
+
+a:active{
+    color: #D7263D;
+}
+
+#travel{
+    border: 1px solid black;
+    width: 50px;
+    height: 25px;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    justify-content: center;
+    z-index: 100;
+    background-color: #312F2F;
+    color: white;
+    font-family: 'M PLUS 1p', sans-serif;
+    border-radius: 2px;
+}
+
+/* changes some margings and paddings to account for smaller screen widths */
+@media screen and (max-width: 780px){
+    div#mainContent{
+        width: 80vw;
+    }
+    div#extraInfo{
+        margin: 0 10vw;
+    }
+    footer{
+        padding-bottom: 20px;
+        padding-top: 20px;
+    }
+    div#display{
+        width: 100vw;
+    }
+
+    div.result{
+        width: 30%;
+    }
+
+    #travel{
+        right: 5px;
+    }
+}

@@ -1,0 +1,16 @@
+I coded it in TypeScript
+
+In extra-info.ts I created a new function that lets me set the extra info of my page without me 
+having to do the check every single time and just passing in a string with the html that should be in the extra
+info sections. Other than that I just had to check to make sure some DOM elements existed before
+I was able to apply html changes to them like for numresults and display.
+
+Utils.ts remained largely the same with me just adding null checks for DOM elements and also putting return types 
+and parameter types.
+
+Hamburger.js just types the DOM.
+
+Main.ts has an interface which holds the information for each japanese character from the API and that character
+holds all the character's readings, definitions, level, and character symbols. Typed some more DOM selector variables as 
+HTMLelements. Typed all the function parameters and the function returns. Import from the other ts files and also removed
+the .ts from the end of them.

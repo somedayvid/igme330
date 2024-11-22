@@ -1,5 +1,5 @@
-import * as utils from './utils.ts';
-import * as info from './extra-info.ts';
+import * as utils from './utils';
+import * as info from './extra-info';
 
 // Define types for arrays
 interface WaniKaniData {
@@ -15,7 +15,6 @@ let mainKanjiArray: WaniKaniData[] = [];
 let mainVocabArray: WaniKaniData[] = [];
 let mainRadicalsArray: WaniKaniData[] = [];
 let term: string = "";
-let timesToLoop: number = 0;
 
 const requestHeaders = new Headers({
   Authorization: 'Bearer ' + '89abe689-ce3d-4035-acfd-65d442782f72',
